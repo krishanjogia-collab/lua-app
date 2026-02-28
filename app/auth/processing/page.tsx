@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import type { EmailOtpType } from '@supabase/supabase-js'
@@ -14,7 +14,7 @@ async function persistSessionServerSide(access_token: string, refresh_token: str
   })
 }
 
-export default function AuthProcessingPage() {
+function AuthProcessingContent() {
   const searchParams = useSearchParams()
   const [error, setError] = useState<string | null>(null)
 
@@ -59,22 +59,40 @@ export default function AuthProcessingPage() {
     handleAuth()
   }, [searchParams])
 
+  if (error) {
+    return <p className="text-sage-600 font-inter text-sm">{error}</p>
+  }
+
+  return (
+    <div className="flex flex-col items-center gap-4">
+      <div className="inline-flex items-center justify-center w-16 h-16 rounded-3xl bg-terracotta shadow-soft">
+        <Sprout className="w-8 h-8 text-white" strokeWidth={1.5} />
+      </div>
+      <div className="flex items-center gap-2 text-sage-500 font-inter text-sm">
+        <Loader2 className="w-4 h-4 animate-spin" />
+        Signing you in…
+      </div>
+    </div>
+  )
+}
+
+export default function AuthProcessingPage() {
   return (
     <main className="min-h-screen bg-cream flex items-center justify-center">
       <div className="text-center">
-        {error ? (
-          <p className="text-sage-600 font-inter text-sm">{error}</p>
-        ) : (
+        <Suspense fallback={
           <div className="flex flex-col items-center gap-4">
             <div className="inline-flex items-center justify-center w-16 h-16 rounded-3xl bg-terracotta shadow-soft">
               <Sprout className="w-8 h-8 text-white" strokeWidth={1.5} />
             </div>
             <div className="flex items-center gap-2 text-sage-500 font-inter text-sm">
               <Loader2 className="w-4 h-4 animate-spin" />
-              Signing you in…
+              Loading…
             </div>
           </div>
-        )}
+        }>
+          <AuthProcessingContent />
+        </Suspense>
       </div>
     </main>
   )
