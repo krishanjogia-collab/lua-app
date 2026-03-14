@@ -4,13 +4,12 @@ import { NextResponse, type NextRequest } from 'next/server'
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
-  // ── Short-circuit auth callback BEFORE initialising Supabase client ──
-  // This preserves the PKCE code-verifier cookie untouched for the handler.
+  // Short-circuit auth callback — preserve PKCE cookies
   if (pathname.startsWith('/auth/callback')) {
     return NextResponse.next()
   }
 
-  // ── Mock mode: bypass all auth checks for local preview ──
+  // Mock mode: bypass everything
   if (process.env.NEXT_PUBLIC_MOCK_MODE === 'true') {
     if (pathname === '/') {
       const url = request.nextUrl.clone()
@@ -19,6 +18,11 @@ export async function middleware(request: NextRequest) {
     }
     return NextResponse.next({ request })
   }
+
+  // ---------------------------------------------------------------------------
+  // The ONLY job of this middleware is to refresh the Supabase session cookies.
+  // Auth gating lives in app/(subscriber)/layout.tsx — NOT here.
+  // ---------------------------------------------------------------------------
 
   let supabaseResponse = NextResponse.next({ request })
 
@@ -41,79 +45,9 @@ export async function middleware(request: NextRequest) {
     }
   )
 
-  // IMPORTANT: Do not add any logic between createServerClient and getUser()
-  const { data: { user } } = await supabase.auth.getUser()
-
-  // Helper: create a redirect that preserves any cookies Supabase set during getUser()
-  function redirectWithCookies(destination: string) {
-    const url = request.nextUrl.clone()
-    url.pathname = destination
-    const redirectResponse = NextResponse.redirect(url)
-    // Copy all cookies from supabaseResponse to the redirect response
-    supabaseResponse.cookies.getAll().forEach((cookie) => {
-      redirectResponse.cookies.set(cookie.name, cookie.value, {
-        path: '/',
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax',
-      })
-    })
-    return redirectResponse
-  }
-
-  // Public routes — no auth required (Landing page '/' is handled separately below)
-  const publicRoutes = ['/login', '/auth/processing', '/api/auth', '/preview', '/api/og', '/api/share-card']
-  if (publicRoutes.some(r => pathname.startsWith(r))) {
-    return supabaseResponse
-  }
-
-  // Handle Landing Page explicitly
-  if (pathname === '/') {
-    if (user) {
-      return redirectWithCookies('/calendar')
-    } else {
-      return supabaseResponse
-    }
-  }
-
-  // Unauthenticated visitors trying to access the app → redirect to login
-  if (!user) {
-    const loginUrl = request.nextUrl.clone()
-    loginUrl.pathname = '/login'
-    loginUrl.searchParams.set('next', pathname)
-    const redirectResponse = NextResponse.redirect(loginUrl)
-    supabaseResponse.cookies.getAll().forEach((cookie) => {
-      redirectResponse.cookies.set(cookie.name, cookie.value, {
-        path: '/',
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax',
-      })
-    })
-    return redirectResponse
-  }
-
-  // Check profile for onboarding + admin status
-  // Wrapped in try/catch because has_onboarded column may not exist yet
-  if (user) {
-    try {
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('has_onboarded, is_admin')
-        .eq('id', user.id)
-        .single()
-
-      // Redirect to onboarding if not yet completed (skip if column missing / profile null)
-      if (profile?.has_onboarded === false && !pathname.startsWith('/onboarding')) {
-        return redirectWithCookies('/onboarding')
-      }
-
-      // Studio routes → admin only
-      if (pathname.startsWith('/studio') && !profile?.is_admin) {
-        return redirectWithCookies('/calendar')
-      }
-    } catch {
-      // Profile query failed (missing column, no profile row, etc.) — let them through
-    }
-  }
+  // Refresh the session — this is the whole point of the middleware.
+  // Do NOT use the result for auth gating. Let layouts handle that.
+  await supabase.auth.getUser()
 
   return supabaseResponse
 }

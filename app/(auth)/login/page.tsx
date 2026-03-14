@@ -1,10 +1,10 @@
 'use client'
 
 import { useState } from 'react'
+import { createClient } from '@/lib/supabase/client'
 import { Sprout } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/Button'
-import { sendOtp, verifyOtp } from './actions'
 
 export default function LoginPage() {
   const [email, setEmail]   = useState('')
@@ -13,16 +13,18 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError]   = useState<string | null>(null)
 
+  const supabase = createClient()
+
   async function handleSendCode(e: React.FormEvent) {
     e.preventDefault()
     setLoading(true)
     setError(null)
 
-    const result = await sendOtp(email)
+    const { error } = await supabase.auth.signInWithOtp({ email })
 
     setLoading(false)
-    if (result.error) {
-      setError(result.error)
+    if (error) {
+      setError(error.message)
     } else {
       setStep('otp')
     }
@@ -33,13 +35,21 @@ export default function LoginPage() {
     setLoading(true)
     setError(null)
 
-    const result = await verifyOtp(email, otp)
+    const { data, error } = await supabase.auth.verifyOtp({
+      email,
+      token: otp,
+      type: 'email',
+    })
 
-    // If we get here, there was an error (successful verify redirects server-side)
-    setLoading(false)
-    if (result?.error) {
-      setError(result.error)
+    if (error) {
+      setLoading(false)
+      setError(error.message || 'Invalid code. Please try again.')
+      return
     }
+
+    // Session is now established in the browser client's cookies.
+    // Full page reload ensures the server sees the new cookies.
+    window.location.href = '/calendar'
   }
 
   return (
