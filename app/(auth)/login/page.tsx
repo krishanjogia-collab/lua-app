@@ -1,10 +1,10 @@
 'use client'
 
 import { useState } from 'react'
-import { createClient } from '@/lib/supabase/client'
 import { Sprout } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/Button'
+import { sendOtp, verifyOtp } from './actions'
 
 export default function LoginPage() {
   const [email, setEmail]   = useState('')
@@ -13,18 +13,16 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError]   = useState<string | null>(null)
 
-  const supabase = createClient()
-
   async function handleSendCode(e: React.FormEvent) {
     e.preventDefault()
     setLoading(true)
     setError(null)
 
-    const { error } = await supabase.auth.signInWithOtp({ email })
+    const result = await sendOtp(email)
 
     setLoading(false)
-    if (error) {
-      setError(error.message)
+    if (result.error) {
+      setError(result.error)
     } else {
       setStep('otp')
     }
@@ -35,17 +33,12 @@ export default function LoginPage() {
     setLoading(true)
     setError(null)
 
-    const { error } = await supabase.auth.verifyOtp({
-      email,
-      token: otp,
-      type: 'email',
-    })
+    const result = await verifyOtp(email, otp)
 
+    // If we get here, there was an error (successful verify redirects server-side)
     setLoading(false)
-    if (error) {
-      setError(error.message || 'Invalid code. Please try again.')
-    } else {
-      window.location.href = '/calendar'
+    if (result?.error) {
+      setError(result.error)
     }
   }
 
