@@ -59,16 +59,16 @@ export function VaultClient({ assets }: VaultClientProps) {
           animate={{ opacity: 1, y: 0 }}
           className="text-center py-20"
         >
-          <div className="w-16 h-16 rounded-3xl bg-sage-100 flex items-center justify-center mx-auto mb-4">
-            <FolderOpen className="w-8 h-8 text-sage-400" strokeWidth={1.5} />
+          <div className="w-16 h-16 rounded-3xl bg-cream-200 border border-cream-300 flex items-center justify-center mx-auto mb-5 shadow-soft">
+            <FolderOpen className="w-8 h-8 text-sage-500" strokeWidth={1.5} />
           </div>
-          <h2 className="font-lexend text-xl font-medium text-terracotta-900 mb-2">
-            {lang === 'en' ? 'No resources yet' : 'Nenhum recurso ainda'}
+          <h2 className="font-lexend text-2xl font-semibold text-terracotta-900 mb-3">
+            {lang === 'en' ? 'Resources are on the way!' : 'Os recursos estão a caminho!'}
           </h2>
-          <p className="text-sm text-sage-500 font-inter">
+          <p className="text-sage-600 font-inter text-sm max-w-sm mx-auto leading-relaxed">
             {lang === 'en'
-              ? "Resources for this month's theme will appear here once uploaded."
-              : 'Os recursos do tema deste mês aparecerão aqui após o upload.'}
+              ? 'Printables, guides, and classroom signage for this month will appear here once your curriculum is published.'
+              : 'Atividades para imprimir, guias e placas de sala deste mês aparecerão aqui assim que o currículo for publicado.'}
           </p>
         </motion.div>
       ) : (

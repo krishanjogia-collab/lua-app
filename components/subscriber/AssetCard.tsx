@@ -14,7 +14,7 @@ const ASSET_ICONS: Record<AssetType, typeof FileText> = {
 const ASSET_COLORS: Record<AssetType, { border: string; bg: string; icon: string; badge: string }> = {
   Printable: { border: 'border-terracotta-200', bg: 'bg-terracotta-50',  icon: 'text-terracotta-500', badge: 'bg-terracotta-100 text-terracotta-700' },
   Signage:   { border: 'border-sage-200',       bg: 'bg-sage-50',        icon: 'text-sage-600',       badge: 'bg-sage-100 text-sage-700'             },
-  Guide:     { border: 'border-dusty-rose-200', bg: 'bg-dusty-rose-50',  icon: 'text-dusty-rose-500', badge: 'bg-dusty-rose-100 text-dusty-rose-700' },
+  Guide:     { border: 'border-terracotta-200', bg: 'bg-terracotta-50',  icon: 'text-terracotta-500', badge: 'bg-terracotta-100 text-terracotta-700' },
 }
 
 const ASSET_LABELS_EN: Record<AssetType, string> = {

@@ -162,7 +162,7 @@ export function DraftReview({ data, planId, onChange }: DraftReviewProps) {
       </div>
 
       {error && (
-        <p className="text-xs text-dusty-rose-600 font-inter text-center px-2">
+        <p className="text-xs text-terracotta-600 font-inter text-center px-2">
           {error}
         </p>
       )}
@@ -297,7 +297,7 @@ function FieldEditor({ label, value, isEditing, editValue, onEdit, onSave, onCan
             <button onClick={onSave} className="flex items-center gap-1 text-xs text-sage-600 hover:text-sage-800 font-inter transition">
               <Check className="w-3.5 h-3.5" strokeWidth={2} /> Save
             </button>
-            <button onClick={onCancel} className="flex items-center gap-1 text-xs text-dusty-rose-400 hover:text-dusty-rose-600 font-inter transition">
+            <button onClick={onCancel} className="flex items-center gap-1 text-xs text-terracotta-400 hover:text-terracotta-600 font-inter transition">
               <X className="w-3.5 h-3.5" strokeWidth={2} /> Cancel
             </button>
           </div>

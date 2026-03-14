@@ -19,12 +19,12 @@ const DOMAIN_ICONS = {
 }
 
 const DOMAIN_COLORS = {
-  sensory_layout:     { border: 'border-dusty-rose-200', bg: 'bg-dusty-rose-50',  icon: 'text-dusty-rose-500',  badge: 'bg-dusty-rose-100 text-dusty-rose-700' },
+  sensory_layout:     { border: 'border-terracotta-200', bg: 'bg-terracotta-50',  icon: 'text-terracotta-500',  badge: 'bg-terracotta-100 text-terracotta-700' },
   cognitive_literacy: { border: 'border-sage-200',       bg: 'bg-sage-50',        icon: 'text-sage-600',        badge: 'bg-sage-100 text-sage-700'             },
   physical_outdoor:   { border: 'border-terracotta-200', bg: 'bg-terracotta-50',  icon: 'text-terracotta-500',  badge: 'bg-terracotta-100 text-terracotta-700' },
   social_emotional:   { border: 'border-cream-200',      bg: 'bg-cream-50',       icon: 'text-terracotta-600',  badge: 'bg-cream-400 text-terracotta-700'      },
   cultural_global:    { border: 'border-sage-300',       bg: 'bg-sage-50',        icon: 'text-sage-700',        badge: 'bg-sage-100 text-sage-700'             },
-  parent_bridge:      { border: 'border-dusty-rose-300', bg: 'bg-dusty-rose-50',  icon: 'text-dusty-rose-600',  badge: 'bg-dusty-rose-100 text-dusty-rose-700' },
+  parent_bridge:      { border: 'border-terracotta-300', bg: 'bg-terracotta-50',  icon: 'text-terracotta-600',  badge: 'bg-terracotta-100 text-terracotta-700' },
 }
 
 const DOMAIN_LABELS_EN = {

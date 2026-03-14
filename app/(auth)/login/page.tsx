@@ -76,11 +76,17 @@ export default function LoginPage() {
           {step === 'email' ? (
             <>
               <h2 className="font-lexend text-xl font-medium text-terracotta-900 mb-1">
-                Welcome back
+                Welcome to Lua
               </h2>
-              <p className="text-sm text-sage-600 font-inter mb-6">
-                Enter your email and we'll send you a sign-in code.
+              <p className="text-sm text-sage-600 font-inter mb-4">
+                Enter your email to sign in or create a new account.
               </p>
+              <div className="bg-terracotta-50 border border-terracotta-100 rounded-xl p-3 mb-6">
+                <p className="text-xs text-terracotta-800 font-inter flex items-center justify-center gap-1.5 font-medium">
+                  <Sprout className="w-3 h-3" />
+                  AI-powered Pre-K curriculum planning.
+                </p>
+              </div>
 
               <form onSubmit={handleSendCode} className="space-y-4">
                 <div>
@@ -98,7 +104,7 @@ export default function LoginPage() {
                   />
                 </div>
 
-                {error && <p className="text-sm text-dusty-rose-600 font-inter">{error}</p>}
+                {error && <p className="text-sm text-terracotta-600 font-inter">{error}</p>}
 
                 <Button
                   type="submit"
@@ -139,7 +145,7 @@ export default function LoginPage() {
                   />
                 </div>
 
-                {error && <p className="text-sm text-dusty-rose-600 font-inter">{error}</p>}
+                {error && <p className="text-sm text-terracotta-600 font-inter">{error}</p>}
 
                 <Button
                   type="submit"
@@ -154,7 +160,7 @@ export default function LoginPage() {
                 <button
                   type="button"
                   onClick={() => { setStep('email'); setOtp(''); setError(null) }}
-                  className="w-full text-sm text-dusty-rose-500 underline font-inter hover:text-dusty-rose-700 transition"
+                  className="w-full text-sm text-terracotta-500 underline font-inter hover:text-terracotta-700 transition"
                 >
                   Use a different email
                 </button>

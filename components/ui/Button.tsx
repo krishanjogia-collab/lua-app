@@ -15,7 +15,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       primary:   'bg-terracotta text-white shadow-soft hover:bg-terracotta-600 active:bg-terracotta-700',
       secondary: 'bg-sage text-white shadow-soft hover:bg-sage-600 active:bg-sage-700',
       ghost:     'bg-transparent text-terracotta-800 hover:bg-terracotta-50 border border-terracotta-200',
-      danger:    'bg-dusty-rose-400 text-white shadow-soft hover:bg-dusty-rose-500',
+      danger:    'bg-terracotta-400 text-white shadow-soft hover:bg-terracotta-500',
     }
 
     const sizes = {

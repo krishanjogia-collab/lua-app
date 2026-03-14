@@ -48,3 +48,31 @@
     box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
   }
 }
+
+@media print {
+  /* Hide non-content elements */
+  nav, .share-button, .print-button, footer,
+  [data-hide-print] { display: none !important; }
+
+  /* Reset backgrounds for ink-friendly printing */
+  body { background: white !important; color: black !important; }
+
+  /* Ensure cards don't break across pages */
+  .daily-flow-card { break-inside: avoid; page-break-inside: avoid; }
+
+  /* Show full content without scroll containers */
+  .overflow-hidden, .overflow-auto { overflow: visible !important; }
+
+  /* Clean typography */
+  * { font-size: 12pt !important; line-height: 1.4 !important; }
+  h1 { font-size: 18pt !important; }
+  h2, h3 { font-size: 14pt !important; }
+
+  /* Domain cards: stack vertically, remove shadows/animations */
+  .daily-flow-card {
+    box-shadow: none !important;
+    border: 1px solid #ccc !important;
+    margin-bottom: 12pt !important;
+    padding: 8pt !important;
+  }
+}

@@ -112,13 +112,13 @@ export function StudioClient({ plans }: StudioClientProps) {
                 {plan.is_published ? (
                   <CheckCircle2 className="w-4 h-4 text-sage-500 flex-shrink-0 mt-0.5" strokeWidth={1.5} />
                 ) : (
-                  <Clock className="w-4 h-4 text-dusty-rose-400 flex-shrink-0 mt-0.5" strokeWidth={1.5} />
+                  <Clock className="w-4 h-4 text-terracotta-400 flex-shrink-0 mt-0.5" strokeWidth={1.5} />
                 )}
               </div>
               <span className={`inline-flex items-center mt-2 px-2.5 py-0.5 rounded-xl text-xs font-medium font-inter ${
                 plan.is_published
                   ? 'bg-sage-100 text-sage-700'
-                  : 'bg-dusty-rose-100 text-dusty-rose-600'
+                  : 'bg-terracotta-100 text-terracotta-600'
               }`}>
                 {plan.is_published ? 'Published' : 'Draft'}
               </span>
@@ -158,19 +158,35 @@ export function StudioClient({ plans }: StudioClientProps) {
                   />
                 </div>
 
-                {/* Month picker */}
+                {/* Custom Month Picker */}
                 <div>
                   <label className="block text-sm font-medium text-terracotta-800 font-inter mb-1.5">
                     <CalendarRange className="inline w-3.5 h-3.5 mr-1 -mt-0.5" strokeWidth={1.5} />
                     Target Month
                   </label>
-                  <input
-                    type="month"
-                    value={monthYear}
-                    onChange={e => setMonthYear(e.target.value)}
-                    required
-                    className="w-full px-4 py-3 rounded-3xl border border-cream-400 bg-cream-50 text-terracotta-900 focus:outline-none focus:ring-2 focus:ring-terracotta-300 font-inter text-sm transition"
-                  />
+                  <div className="flex gap-3">
+                    <select
+                      value={monthYear.split('-')[1]}
+                      onChange={e => setMonthYear(`${monthYear.split('-')[0]}-${e.target.value}`)}
+                      className="flex-1 px-4 py-3 rounded-3xl border border-cream-400 bg-cream-50 text-terracotta-900 focus:outline-none focus:ring-2 focus:ring-terracotta-300 font-inter text-sm transition appearance-none"
+                    >
+                      {Array.from({ length: 12 }, (_, i) => {
+                        const m = String(i + 1).padStart(2, '0')
+                        const name = new Date(2000, i, 1).toLocaleString('default', { month: 'long' })
+                        return <option key={m} value={m}>{name}</option>
+                      })}
+                    </select>
+                    <select
+                      value={monthYear.split('-')[0]}
+                      onChange={e => setMonthYear(`${e.target.value}-${monthYear.split('-')[1]}`)}
+                      className="w-32 px-4 py-3 rounded-3xl border border-cream-400 bg-cream-50 text-terracotta-900 focus:outline-none focus:ring-2 focus:ring-terracotta-300 font-inter text-sm transition appearance-none"
+                    >
+                      {Array.from({ length: 5 }, (_, i) => {
+                        const y = new Date().getFullYear() + i
+                        return <option key={y} value={y}>{y}</option>
+                      })}
+                    </select>
+                  </div>
                 </div>
 
                 {/* Philosophy toggle */}
@@ -182,7 +198,7 @@ export function StudioClient({ plans }: StudioClientProps) {
                 </div>
 
                 {error && (
-                  <div className="rounded-3xl bg-dusty-rose-50 border border-dusty-rose-200 px-4 py-3 text-sm text-dusty-rose-700 font-inter">
+                  <div className="rounded-3xl bg-terracotta-50 border border-terracotta-200 px-4 py-3 text-sm text-terracotta-700 font-inter">
                     {error}
                   </div>
                 )}

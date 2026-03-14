@@ -9,8 +9,10 @@ export default async function CalendarPage() {
   if (MOCK_MODE) {
     return (
       <CalendarClient
+        userId="mock-user-id"
         plan={MOCK_PLAN}
         profile={{ active_subscription_month: MOCK_PROFILE.active_subscription_month, is_admin: MOCK_PROFILE.is_admin }}
+        hasOnboarded={true}
       />
     )
   }
@@ -22,7 +24,7 @@ export default async function CalendarPage() {
 
   const { data: profile } = await supabase
     .from('profiles')
-    .select('active_subscription_month, language_preference, is_admin')
+    .select('active_subscription_month, language_preference, is_admin, has_onboarded')
     .eq('id', user.id)
     .maybeSingle()
 
@@ -47,5 +49,12 @@ export default async function CalendarPage() {
     plan = data
   }
 
-  return <CalendarClient plan={plan} profile={profile} />
+  return (
+    <CalendarClient 
+      userId={user.id}
+      plan={plan} 
+      profile={profile} 
+      hasOnboarded={profile.has_onboarded ?? true}
+    />
+  )
 }

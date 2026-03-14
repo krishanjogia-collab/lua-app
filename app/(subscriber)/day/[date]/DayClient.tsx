@@ -1,10 +1,13 @@
 'use client'
 
 import Link from 'next/link'
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft, Printer } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { DailyFlowCard } from '@/components/subscriber/DailyFlowCard'
 import { ParentBridgeSnippet } from '@/components/subscriber/ParentBridgeSnippet'
+import { ShareButton } from '@/components/ui/ShareButton'
+import { DownloadPDFButton } from '@/components/ui/DownloadPDFButton'
+import { DownloadCardsButton } from '@/components/ui/DownloadCardsButton'
 import { useLanguage } from '@/app/(subscriber)/LanguageContext'
 import { formatDate } from '@/lib/utils'
 import type { DailyEntry, DayDomains } from '@/lib/types'
@@ -18,11 +21,12 @@ const DOMAIN_ORDER: (keyof DayDomains)[] = [
 ]
 
 interface DayClientProps {
+  plan: { id: string; theme_name: string }
   dayEntry: DailyEntry
   date:     string
 }
 
-export function DayClient({ dayEntry, date }: DayClientProps) {
+export function DayClient({ plan, dayEntry, date }: DayClientProps) {
   const { lang } = useLanguage()
 
   const dateLabel = formatDate(date, lang)
@@ -43,17 +47,56 @@ export function DayClient({ dayEntry, date }: DayClientProps) {
       <motion.div
         initial={{ opacity: 0, y: -8 }}
         animate={{ opacity: 1, y: 0 }}
-        className="mb-8"
+        className="mb-8 flex items-start justify-between"
       >
-        <p className="text-xs text-sage-400 font-inter uppercase tracking-widest mb-1">
-          {lang === 'en' ? "Today's Curriculum" : 'Currículo de Hoje'}
-        </p>
-        <h1 className="font-lexend text-2xl font-semibold text-terracotta-900 leading-tight">
-          {dateLabel}
-        </h1>
-        <p className="text-sm text-sage-500 font-inter mt-1">
-          {lang === 'en' ? `Day ${dayEntry.day_number}` : `Dia ${dayEntry.day_number}`}
-        </p>
+        <div>
+          <p className="text-xs text-sage-400 font-inter uppercase tracking-widest mb-1">
+            {lang === 'en' ? "Today's Curriculum" : 'Currículo de Hoje'}
+          </p>
+          <h1 className="font-lexend text-2xl font-semibold text-terracotta-900 leading-tight">
+            {dateLabel}
+          </h1>
+          <p className="text-sm text-sage-500 font-inter mt-1">
+            {lang === 'en' ? `Day ${dayEntry.day_number}` : `Dia ${dayEntry.day_number}`}
+          </p>
+        </div>
+        <div className="pt-2 flex flex-col items-end gap-2" data-hide-print>
+          <div className="flex items-center gap-2">
+            <DownloadCardsButton
+              dayEntry={dayEntry}
+              lang={lang}
+              filename={`lua-activity-cards-${date}.pdf`}
+            />
+            <DownloadPDFButton
+              plan={plan}
+              dayEntry={dayEntry}
+              dateLabel={dateLabel}
+              lang={lang}
+              filename={`lua-${plan.theme_name.toLowerCase().replace(/\s+/g, '-')}-${date}.pdf`}
+            />
+            <button
+              onClick={() => window.print()}
+              className="px-3 py-2 rounded-2xl border border-sage-200 text-sage-600 hover:bg-sage-50 hover:text-sage-800 transition flex items-center gap-2 text-sm font-medium font-lexend"
+            >
+              <Printer className="w-4 h-4" />
+              <span className="hidden sm:inline">{lang === 'en' ? 'Print' : 'Imprimir'}</span>
+            </button>
+            <ShareButton
+              title={lang === 'en' ? `Lua Curriculum — ${dateLabel}` : `Currículo Lua — ${dateLabel}`}
+              text={lang === 'en' ? "Check out today's Pre-K activities!" : "Confira as atividades da Educação Infantil de hoje!"}
+              url={typeof window !== 'undefined' ? `${window.location.origin}/preview/day/PLACEHOLDER/${date}` : ''}
+              lang={lang}
+              variant="secondary"
+            />
+          </div>
+          <a 
+            href={`/api/share-card/day?planId=PLACEHOLDER&date=${date}`} 
+            download={`lua-story-${date}.png`}
+            className="text-xs font-inter text-sage-500 hover:text-terracotta-600 transition underline decoration-sage-300 underline-offset-4"
+          >
+            {lang === 'en' ? 'Download for Stories' : 'Baixar para Stories'}
+          </a>
+        </div>
       </motion.div>
 
       {/* Domain cards — "Daily Flow Feed" */}

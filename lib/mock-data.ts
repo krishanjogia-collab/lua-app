@@ -6,6 +6,7 @@ export const MOCK_PROFILE: Profile = {
   active_subscription_month: '2026-02',
   language_preference:       'en',
   is_admin:                  true,
+  has_onboarded:             true,
 }
 
 export const MOCK_DAILY_DATA: DailyData = {

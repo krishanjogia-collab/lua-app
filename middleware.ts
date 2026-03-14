@@ -44,13 +44,26 @@ export async function middleware(request: NextRequest) {
   // IMPORTANT: Do not add any logic between createServerClient and getUser()
   const { data: { user } } = await supabase.auth.getUser()
 
-  // Public routes — no auth required
-  const publicRoutes = ['/login', '/auth/processing', '/api/auth']
+  // Public routes — no auth required (Landing page '/' is handled separately below)
+  const publicRoutes = ['/login', '/auth/processing', '/api/auth', '/preview', '/api/og', '/api/share-card']
   if (publicRoutes.some(r => pathname.startsWith(r))) {
     return supabaseResponse
   }
 
-  // Unauthenticated → redirect to login
+  // Handle Landing Page explicitly
+  if (pathname === '/') {
+    if (user) {
+      // Authenticated users go to their calendar
+      const calendarUrl = request.nextUrl.clone()
+      calendarUrl.pathname = '/calendar'
+      return NextResponse.redirect(calendarUrl)
+    } else {
+      // Unauthenticated users stay and see the landing page
+      return supabaseResponse
+    }
+  }
+
+  // Unauthenticated visitors trying to access the app → redirect to login
   if (!user) {
     const loginUrl = request.nextUrl.clone()
     loginUrl.pathname = '/login'

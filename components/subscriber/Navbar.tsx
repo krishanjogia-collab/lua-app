@@ -86,7 +86,7 @@ export function Navbar({ isAdmin }: NavbarProps) {
           <button
             onClick={handleSignOut}
             aria-label={lang === 'en' ? 'Sign out' : 'Sair'}
-            className="p-2 rounded-2xl text-sage-400 hover:text-dusty-rose-500 hover:bg-dusty-rose-50 transition"
+            className="p-2 rounded-2xl text-sage-400 hover:text-terracotta-500 hover:bg-terracotta-50 transition"
           >
             <LogOut className="w-4 h-4" strokeWidth={1.5} />
           </button>

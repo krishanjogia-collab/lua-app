@@ -55,16 +55,17 @@ export interface Asset {
 export interface Profile {
   id:                        string
   email:                     string
+  has_onboarded:             boolean
   active_subscription_month: string | null   // "2024-03"
   language_preference:       Language
   is_admin:                  boolean
 }
 
 export const DOMAIN_META: Record<keyof DayDomains, { label: string; labelPt: string; color: string; bg: string }> = {
-  sensory_layout:    { label: 'Sensory & Layout',     labelPt: 'Sensorial & Ambiente',  color: 'text-dusty-rose-600', bg: 'bg-dusty-rose-50'  },
+  sensory_layout:    { label: 'Sensory & Layout',     labelPt: 'Sensorial & Ambiente',  color: 'text-terracotta-600', bg: 'bg-terracotta-50'  },
   cognitive_literacy:{ label: 'Cognitive & Literacy', labelPt: 'Cognição & Literacia',  color: 'text-sage-700',       bg: 'bg-sage-50'        },
   physical_outdoor:  { label: 'Physical & Outdoor',   labelPt: 'Físico & Ar Livre',     color: 'text-terracotta-700', bg: 'bg-terracotta-50'  },
   social_emotional:  { label: 'Social-Emotional',     labelPt: 'Sócio-Emocional',       color: 'text-terracotta-600', bg: 'bg-cream-300'      },
   cultural_global:   { label: 'Cultural & Global',    labelPt: 'Cultural & Global',     color: 'text-sage-600',       bg: 'bg-sage-50'        },
-  parent_bridge:     { label: 'Parent Bridge',         labelPt: 'Ponte com os Pais',    color: 'text-dusty-rose-700', bg: 'bg-dusty-rose-50'  },
+  parent_bridge:     { label: 'Parent Bridge',         labelPt: 'Ponte com os Pais',    color: 'text-terracotta-700', bg: 'bg-terracotta-50'  },
 }

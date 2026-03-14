@@ -1,0 +1,26 @@
+{
+  "name": "Lua Pre-K Curriculum Engine",
+  "short_name": "Lua",
+  "description": "AI-powered, bilingual Pre-K curriculum planning",
+  "start_url": "/calendar",
+  "display": "standalone",
+  "background_color": "#FBF9F6",
+  "theme_color": "#E2725B",
+  "icons": [
+    {
+      "src": "/favicon-16x16.png",
+      "sizes": "16x16",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon-32x32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ]
+}

@@ -67,10 +67,23 @@ RETURN: ONLY valid JSON. No markdown, no code fences.
   ]
 }`
 
-  const result = await model.generateContent(prompt)
-  const text   = result.response.text()
-  const data   = JSON.parse(text) as { roadmap: { date: string; sub_theme: string }[] }
-  return data.roadmap
+  try {
+    const result = await model.generateContent({
+      contents: [{ role: 'user', parts: [{ text: prompt }] }],
+      generationConfig: {
+        responseMimeType: 'application/json',
+        temperature:      0.9,
+      }
+    }) 
+    const text   = result.response.text()
+    const data   = JSON.parse(text) as { roadmap: { date: string; sub_theme: string }[] }
+    return data.roadmap
+  } catch (error: any) {
+    if (error.name === 'AbortError' || error.message?.includes('timeout')) {
+      throw new Error(`Director Agent timed out after 60 seconds.`)
+    }
+    throw new Error(`Director Agent failed: ${error.message}`)
+  }
 }
 
 // ── Specialist Domain Agent ───────────────────────────────────────────────────
@@ -122,10 +135,27 @@ RETURN: ONLY valid JSON. No markdown, no code fences.
   ]
 }`
 
-  const result = await model.generateContent(prompt)
-  const text   = result.response.text()
-  const data   = JSON.parse(text) as { activities: (DomainActivity & { date: string })[] }
-  return data.activities
+  try {
+    const result = await model.generateContent({
+      contents: [{ role: 'user', parts: [{ text: prompt }] }],
+      generationConfig: {
+        responseMimeType: 'application/json',
+        temperature:      0.85,
+      }
+    })
+    const text   = result.response.text()
+    const data   = JSON.parse(text) as { activities: (DomainActivity & { date: string })[] }
+    return data.activities
+  } catch (error: any) {
+    if (error.name === 'AbortError' || error.message?.includes('timeout')) {
+      throw new Error(`Specialist Agent (${domain}) timed out after 60 seconds.`)
+    }
+    // Specific error mapping for Gemini payload errors / rate limits
+    if (error.message?.includes('429') || error.message?.includes('quota')) {
+      throw new Error('API Rate limit exceeded. Please wait a moment and try again.')
+    }
+    throw new Error(`Specialist Agent (${domain}) failed: ${error.message}`)
+  }
 }
 
 // ── Main export ───────────────────────────────────────────────────────────────
