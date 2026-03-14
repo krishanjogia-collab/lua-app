@@ -19,11 +19,16 @@ export default async function ReviewPage({ params }: Props) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  const { data: profile } = await supabase
+  const { data: profile, error: profileError } = await supabase
     .from('profiles')
     .select('is_admin')
     .eq('id', user.id)
     .maybeSingle()
+
+  if (profileError) {
+    console.error('[ReviewPage] Error fetching profile:', profileError)
+    throw new Error(`[ReviewPage] Profile fetch failed: ${profileError.message}`)
+  }
 
   if (!profile?.is_admin) redirect('/calendar')
 

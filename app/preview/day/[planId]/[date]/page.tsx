@@ -48,7 +48,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const domainNames = dayEntry.activities?.map((a: any) => a.domain) || []
   const uniqueDomains = Array.from(new Set(domainNames)).slice(0, 3)
 
-  const title = `${theme} — ${formattedDate} | Lua`
+  const title = `${theme} | ${formattedDate} | Lua Learn`
   const desc = `Pre-K activities: ${uniqueDomains.join(', ')}. ${teaserDesc}`
   const ogUrl = `${process.env.NEXT_PUBLIC_SITE_URL || ''}/api/og/day?planId=${params.planId}&date=${params.date}`
 

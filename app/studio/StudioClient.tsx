@@ -71,7 +71,7 @@ export function StudioClient({ plans }: StudioClientProps) {
             </div>
             <div>
               <h1 className="font-lexend font-semibold text-terracotta-900 text-lg leading-tight">Creator Studio</h1>
-              <p className="text-xs text-sage-400 font-inter">AI Curriculum Engine</p>
+              <p className="text-xs text-sage-400 font-inter">Expert Curriculum Engine</p>
             </div>
           </div>
           <Button

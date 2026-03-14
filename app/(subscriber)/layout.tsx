@@ -19,11 +19,16 @@ export default async function SubscriberLayout({ children }: { children: React.R
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) redirect('/login')
 
-    const { data: profile } = await supabase
+    const { data: profile, error: profileError } = await supabase
       .from('profiles')
       .select('is_admin, language_preference')
       .eq('id', user.id)
       .maybeSingle()
+
+    if (profileError) {
+      console.error('[SubscriberLayout] Error fetching profile:', profileError)
+      throw new Error(`[SubscriberLayout] Profile fetch failed: ${profileError.message}`)
+    }
 
     isAdmin     = profile?.is_admin ?? false
     initialLang = (profile?.language_preference ?? 'en') as Language

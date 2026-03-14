@@ -82,7 +82,7 @@ export function DayClient({ plan, dayEntry, date }: DayClientProps) {
               <span className="hidden sm:inline">{lang === 'en' ? 'Print' : 'Imprimir'}</span>
             </button>
             <ShareButton
-              title={lang === 'en' ? `Lua Curriculum — ${dateLabel}` : `Currículo Lua — ${dateLabel}`}
+              title={lang === 'en' ? `Lua Learn | ${dateLabel}` : `Currículo Lua Learn | ${dateLabel}`}
               text={lang === 'en' ? "Check out today's Pre-K activities!" : "Confira as atividades da Educação Infantil de hoje!"}
               url={typeof window !== 'undefined' ? `${window.location.origin}/preview/day/PLACEHOLDER/${date}` : ''}
               lang={lang}

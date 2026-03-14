@@ -25,11 +25,16 @@ export default async function DayPage({ params }: Props) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  const { data: profile } = await supabase
+  const { data: profile, error: profileError } = await supabase
     .from('profiles')
     .select('active_subscription_month, language_preference, is_admin')
     .eq('id', user.id)
     .maybeSingle()
+
+  if (profileError) {
+    console.error('[DayPage] Error fetching profile:', profileError)
+    throw new Error(`[DayPage] Profile fetch failed: ${profileError.message}`)
+  }
 
   if (!profile) redirect('/login')
 

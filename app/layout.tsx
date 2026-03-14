@@ -18,21 +18,21 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: {
-    default:  'Lua — Pre-K Curriculum Engine',
-    template: '%s | Lua',
+    default:  'Lua Learn | Pre-K Curriculum',
+    template: '%s | Lua Learn',
   },
-  description: 'AI-powered, bilingual Pre-K curriculum planning. Daily activities covering all developmental domains.',
-  keywords:    ['pre-k', 'early childhood', 'curriculum', 'montessori', 'reggio', 'AI'],
+  description: 'Expert-crafted, bilingual Pre-K curriculum planning. Daily activities covering all developmental domains.',
+  keywords:    ['pre-k', 'early childhood', 'curriculum', 'montessori', 'reggio'],
   openGraph: {
-    title: 'Lua — Pre-K Curriculum Engine',
-    description: 'AI-powered, bilingual Pre-K curriculum planning. Daily activities covering all developmental domains.',
+    title: 'Lua Learn | Pre-K Curriculum',
+    description: 'Expert-crafted, bilingual Pre-K curriculum planning. Daily activities covering all developmental domains.',
     type: 'website',
     images: [{ url: '/og-default.png', width: 1200, height: 630 }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Lua — Pre-K Curriculum Engine',
-    description: 'AI-powered, bilingual Pre-K curriculum planning.',
+    title: 'Lua Learn | Pre-K Curriculum',
+    description: 'Expert-crafted, bilingual Pre-K curriculum planning.',
     images: ['/og-default.png'],
   },
   icons: {

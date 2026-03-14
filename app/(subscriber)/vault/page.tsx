@@ -16,11 +16,16 @@ export default async function VaultPage() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  const { data: profile } = await supabase
+  const { data: profile, error: profileError } = await supabase
     .from('profiles')
     .select('active_subscription_month, is_admin')
     .eq('id', user.id)
     .maybeSingle()
+
+  if (profileError) {
+    console.error('[VaultPage] Error fetching profile:', profileError)
+    throw new Error(`[VaultPage] Profile fetch failed: ${profileError.message}`)
+  }
 
   if (!profile) redirect('/login')
 

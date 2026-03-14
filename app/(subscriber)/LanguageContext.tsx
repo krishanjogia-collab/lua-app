@@ -24,10 +24,12 @@ export function LanguageProvider({ children, initial }: { children: ReactNode; i
     try {
       const { data: { user } } = await supabase.auth.getUser()
       if (user) {
-        await supabase
+        const { error: updateError } = await supabase
           .from('profiles')
           .update({ language_preference: newLang })
           .eq('id', user.id)
+          
+        if (updateError) throw updateError
       }
     } catch (err) {
       console.error('Failed to persist language preference:', err)

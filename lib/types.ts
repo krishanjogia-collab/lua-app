@@ -59,6 +59,8 @@ export interface Profile {
   active_subscription_month: string | null   // "2024-03"
   language_preference:       Language
   is_admin:                  boolean
+  planning_cadence:          'weekly' | 'monthly'
+  age_group:                 '3-4' | '4-5' | 'mixed'
 }
 
 export const DOMAIN_META: Record<keyof DayDomains, { label: string; labelPt: string; color: string; bg: string }> = {

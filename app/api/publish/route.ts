@@ -13,7 +13,10 @@ export async function POST(request: Request) {
     .eq('id', user.id)
     .single()
 
-  if (profileError) console.error('[publish] Profile query error:', profileError.message)
+  if (profileError) {
+    console.error('[publish] Profile query error:', profileError)
+    return NextResponse.json({ error: `Profile query error: ${profileError.message}` }, { status: 500 })
+  }
 
   if (!profile?.is_admin) {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 })

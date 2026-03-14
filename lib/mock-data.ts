@@ -7,6 +7,8 @@ export const MOCK_PROFILE: Profile = {
   language_preference:       'en',
   is_admin:                  true,
   has_onboarded:             true,
+  planning_cadence:          'monthly',
+  age_group:                 '4-5'
 }
 
 export const MOCK_DAILY_DATA: DailyData = {

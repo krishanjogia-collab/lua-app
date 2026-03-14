@@ -12,7 +12,6 @@ export default async function CalendarPage() {
         userId="mock-user-id"
         plan={MOCK_PLAN}
         profile={{ active_subscription_month: MOCK_PROFILE.active_subscription_month, is_admin: MOCK_PROFILE.is_admin }}
-        hasOnboarded={true}
       />
     )
   }
@@ -22,11 +21,16 @@ export default async function CalendarPage() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  const { data: profile } = await supabase
+  const { data: profile, error: profileError } = await supabase
     .from('profiles')
     .select('active_subscription_month, language_preference, is_admin, has_onboarded')
     .eq('id', user.id)
     .maybeSingle()
+
+  if (profileError) {
+    console.error('[CalendarPage] Error fetching profile:', profileError)
+    throw new Error(`[CalendarPage] Profile fetch failed: ${profileError.message}`)
+  }
 
   if (!profile) redirect('/login')
 
@@ -49,12 +53,17 @@ export default async function CalendarPage() {
     plan = data
   }
 
+  if (!profile.has_onboarded) redirect('/onboarding')
+
   return (
-    <CalendarClient 
-      userId={user.id}
-      plan={plan} 
-      profile={profile} 
-      hasOnboarded={profile.has_onboarded ?? true}
-    />
+    <div className="min-h-screen bg-[#FDF8E2]">
+      <div className="pb-24 lg:pb-8">
+        <CalendarClient 
+          userId={user.id}
+          plan={plan} 
+          profile={profile}
+        />
+      </div>
+    </div>
   )
 }

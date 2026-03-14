@@ -174,7 +174,7 @@ export function ActivityCardsPDF({ dayEntry, lang }: ActivityCardsPDFProps) {
                     </View>
                   </View>
                 )}
-                <Text style={styles.footer}>🌙 Lua</Text>
+                <Text style={styles.footer}>🌙 Lua Learn</Text>
               </View>
             )
           })}

@@ -35,7 +35,7 @@ export function Navbar({ isAdmin }: NavbarProps) {
           <div className="w-9 h-9 rounded-2xl bg-terracotta flex items-center justify-center shadow-soft group-hover:bg-terracotta-600 transition">
             <Sprout className="w-5 h-5 text-white" strokeWidth={1.5} />
           </div>
-          <span className="font-lexend font-semibold text-terracotta-900 text-lg tracking-tight">Lua</span>
+          <span className="font-lexend font-semibold text-terracotta-900 text-lg tracking-tight">Lua Learn</span>
         </Link>
 
         {/* Nav links */}

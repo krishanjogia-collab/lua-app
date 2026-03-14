@@ -66,7 +66,7 @@ const DOMAIN_ICONS: Record<string, { icon: string; en: string; pt: string }> = {
           
           <div className="relative z-10">
             <div className="flex items-center gap-2 text-terracotta-100 text-sm font-inter tracking-wide uppercase mb-3">
-              <span>🌙 Lua</span>
+              <span>🌙 Lua Learn</span>
             </div>
             <h1 className="font-lexend text-2xl font-bold mb-1">
               {plan.theme_name}

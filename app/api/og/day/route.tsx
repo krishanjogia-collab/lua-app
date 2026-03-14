@@ -89,7 +89,7 @@ export async function GET(request: Request) {
             marginBottom: '60px'
           }}>
             <span style={{ marginRight: '16px', fontSize: 56 }}>🌙</span>
-            Lua
+            Lua Learn
           </div>
 
           {/* Main Content Card */}
@@ -176,7 +176,7 @@ export async function GET(request: Request) {
             fontWeight: 500
           }}>
             <span>Pre-K Curriculum Engine</span>
-            <span style={{ color: '#E2725B', fontWeight: 600 }}>luaapp.com</span>
+            <span style={{ color: '#E2725B', fontWeight: 600 }}>lualearn.com</span>
           </div>
         </div>
       ),

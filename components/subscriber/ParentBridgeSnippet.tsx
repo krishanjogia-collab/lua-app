@@ -20,8 +20,8 @@ export function ParentBridgeSnippet({ domain, lang, date, hideShare }: ParentBri
   const text = lang === 'en' ? domain.en : domain.pt
 
   const fullSnippet = lang === 'en'
-    ? `📚 Today's Learning — ${new Date(date + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}\n\n${text}\n\nWith love, the Lua team 🌿`
-    : `📚 Aprendizado de Hoje — ${new Date(date + 'T12:00:00').toLocaleDateString('pt-BR', { weekday: 'long', month: 'long', day: 'numeric' })}\n\n${text}\n\nCom carinho, a equipe Lua 🌿`
+    ? `📚 Today's Learning - ${new Date(date + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}\n\n${text}\n\nWith love, the Lua Learn team 🌿`
+    : `📚 Aprendizado de Hoje - ${new Date(date + 'T12:00:00').toLocaleDateString('pt-BR', { weekday: 'long', month: 'long', day: 'numeric' })}\n\n${text}\n\nCom carinho, a equipe Lua Learn 🌿`
 
   async function handleCopy() {
     try {
@@ -40,7 +40,7 @@ export function ParentBridgeSnippet({ domain, lang, date, hideShare }: ParentBri
           <Users className="w-4 h-4 text-terracotta-500" strokeWidth={1.5} />
         </div>
         <span className="font-lexend font-semibold text-terracotta-900 text-sm">
-          {lang === 'en' ? 'Parent Bridge — Copy to Share' : 'Ponte com os Pais — Copiar para Compartilhar'}
+          {lang === 'en' ? 'Parent Bridge - Copy to Share' : 'Ponte com os Pais - Copiar para Compartilhar'}
         </span>
       </div>
 

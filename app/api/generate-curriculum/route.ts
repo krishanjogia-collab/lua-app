@@ -11,14 +11,16 @@ export async function POST(request: Request) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const { data: profile } = await supabase
+  // Removed admin check to allow Sprout onboarding generation
+  const { data: profile, error: profileError } = await supabase
     .from('profiles')
     .select('is_admin')
     .eq('id', user.id)
     .single()
 
-  if (!profile?.is_admin) {
-    return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+  if (profileError) {
+    console.error('[generate-curriculum] Profile query error:', profileError)
+    return NextResponse.json({ error: `Profile query error: ${profileError.message}` }, { status: 500 })
   }
 
   try {

@@ -80,7 +80,7 @@ export async function GET(request: Request) {
             alignSelf: 'center'
           }}>
             <span style={{ marginRight: '16px', fontSize: 48 }}>🌙</span>
-            Lua
+            Lua Learn
           </div>
 
           {/* Top Info Card */}
@@ -241,7 +241,7 @@ export async function GET(request: Request) {
               Swipe up to see full plan
             </div>
             <div style={{ fontSize: 28, opacity: 0.9 }}>
-              luaapp.com/preview/day/{planId.slice(0, 8)}/{date}
+              lualearn.com/preview/day/{planId.slice(0, 8)}/{date}
             </div>
           </div>
         </div>

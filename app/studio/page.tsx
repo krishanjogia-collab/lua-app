@@ -21,7 +21,10 @@ export default async function StudioPage() {
     .eq('id', user.id)
     .single()
 
-  if (profileError) console.error('[StudioPage] Profile query error:', profileError.message)
+  if (profileError) {
+    console.error('[StudioPage] Profile query error:', profileError)
+    throw new Error(`[StudioPage] Profile fetch failed: ${profileError.message}`)
+  }
 
   if (!profile?.is_admin) redirect('/calendar')
 

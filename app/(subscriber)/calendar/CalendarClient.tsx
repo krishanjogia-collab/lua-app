@@ -2,7 +2,6 @@
 
 import { CalendarDays, Sprout } from 'lucide-react'
 import { CalendarGrid } from '@/components/subscriber/CalendarGrid'
-import { WelcomeModal } from '@/components/subscriber/WelcomeModal'
 import { useLanguage } from '@/app/(subscriber)/LanguageContext'
 import { formatMonthYear } from '@/lib/utils'
 import type { CurriculumPlan } from '@/lib/types'
@@ -11,16 +10,14 @@ interface CalendarClientProps {
   userId: string
   plan:    CurriculumPlan | null
   profile: { active_subscription_month: string | null; is_admin: boolean }
-  hasOnboarded: boolean
 }
 
-export function CalendarClient({ userId, plan, profile, hasOnboarded }: CalendarClientProps) {
+export function CalendarClient({ userId, plan, profile }: CalendarClientProps) {
   const { lang } = useLanguage()
 
   if (!plan) {
     return (
       <div className="max-w-3xl mx-auto px-4 py-16 text-center">
-        <WelcomeModal userId={userId} lang={lang} hasOnboarded={hasOnboarded} />
         <div className="w-16 h-16 rounded-3xl bg-cream-200 border border-cream-300 flex items-center justify-center mx-auto mb-5 shadow-soft">
           <Sprout className="w-8 h-8 text-sage-500" strokeWidth={1.5} />
         </div>
@@ -41,7 +38,6 @@ export function CalendarClient({ userId, plan, profile, hasOnboarded }: Calendar
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-8">
-      <WelcomeModal userId={userId} lang={lang} hasOnboarded={hasOnboarded} />
       {/* Header */}
       <div className="mb-8">
         <div className="flex items-center gap-2 mb-1">

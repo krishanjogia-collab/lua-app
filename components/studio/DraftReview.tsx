@@ -152,7 +152,7 @@ export function DraftReview({ data, planId, onChange }: DraftReviewProps) {
       <div className="sticky top-20 z-10 flex items-center justify-between bg-white/90 backdrop-blur-md rounded-3xl shadow-soft px-5 py-3.5 border border-cream-300">
         <div>
           <p className="font-lexend font-semibold text-terracotta-900 text-sm">
-            {data.theme} — {data.month_year}
+            {data.theme} | {data.month_year}
           </p>
           <p className="text-xs text-sage-500 font-inter">{data.days.length} days generated · Draft</p>
         </div>
@@ -176,7 +176,7 @@ export function DraftReview({ data, planId, onChange }: DraftReviewProps) {
           >
             <div className="text-left">
               <p className="font-lexend font-semibold text-terracotta-900 text-sm">
-                Day {day.day_number} — {day.weekday}
+                Day {day.day_number} · {day.weekday}
               </p>
               <p className="text-xs text-sage-400 font-inter">{day.date}</p>
             </div>
