@@ -1,6 +1,7 @@
 'use client'
 
-import { CalendarDays, Sprout } from 'lucide-react'
+import { CalendarDays, Sprout, ChevronLeft, ChevronRight } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 import { CalendarGrid } from '@/components/subscriber/CalendarGrid'
 import { useLanguage } from '@/app/(subscriber)/LanguageContext'
 import { formatMonthYear } from '@/lib/utils'
@@ -11,10 +12,18 @@ interface CalendarClientProps {
   plan:    CurriculumPlan | null
   profile: { active_subscription_month: string | null; is_admin: boolean }
   completions?: CompletionRecord[]
+  availableMonths?: string[]
 }
 
-export function CalendarClient({ userId, plan, profile, completions = [] }: CalendarClientProps) {
+export function CalendarClient({ userId, plan, profile, completions = [], availableMonths = [] }: CalendarClientProps) {
   const { lang } = useLanguage()
+  const router = useRouter()
+
+  const currentMonth = plan?.month_year ?? ''
+  const currentIdx = availableMonths.indexOf(currentMonth)
+  // availableMonths is sorted desc (newest first), so "prev" = older = higher index
+  const prevMonth = currentIdx < availableMonths.length - 1 ? availableMonths[currentIdx + 1] : null
+  const nextMonth = currentIdx > 0 ? availableMonths[currentIdx - 1] : null
 
   if (!plan) {
     return (
@@ -80,9 +89,29 @@ export function CalendarClient({ userId, plan, profile, completions = [] }: Cale
               {lang === 'en' ? 'Monthly Curriculum' : 'Currículo Mensal'}
             </span>
           </div>
-          <h1 className="font-lexend text-3xl font-semibold text-terracotta-900 leading-tight">
-            {monthLabel}
-          </h1>
+          <div className="flex items-center gap-2">
+            {prevMonth && (
+              <button
+                onClick={() => router.push(`/calendar?month=${prevMonth}`)}
+                className="p-1.5 rounded-xl hover:bg-cream-200 transition text-sage-500 hover:text-terracotta-700"
+                aria-label={lang === 'en' ? 'Previous month' : 'Mês anterior'}
+              >
+                <ChevronLeft className="w-5 h-5" />
+              </button>
+            )}
+            <h1 className="font-lexend text-3xl font-semibold text-terracotta-900 leading-tight">
+              {monthLabel}
+            </h1>
+            {nextMonth && (
+              <button
+                onClick={() => router.push(`/calendar?month=${nextMonth}`)}
+                className="p-1.5 rounded-xl hover:bg-cream-200 transition text-sage-500 hover:text-terracotta-700"
+                aria-label={lang === 'en' ? 'Next month' : 'Próximo mês'}
+              >
+                <ChevronRight className="w-5 h-5" />
+              </button>
+            )}
+          </div>
           <p className="text-sage-600 font-inter mt-1">
             {lang === 'en' ? 'Theme:' : 'Tema:'}{' '}
             <span className="text-terracotta-700 font-medium">{theme}</span>
