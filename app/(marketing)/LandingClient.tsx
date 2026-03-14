@@ -3,9 +3,6 @@
 import { motion } from 'framer-motion'
 import { ArrowRight, Sparkles, BookOpen, Layers, Users, Globe, Frame } from 'lucide-react'
 
-// Replace PLACEHOLDER with a real published plan ID for the "See Example" link down the line
-const MOCK_PREVIEW_LINK = '/preview/day/123/2026-03-14'
-
 export default function LandingClient() {
   const staggerContainer = {
     hidden: { opacity: 0 },
@@ -46,7 +43,7 @@ export default function LandingClient() {
             <a href="/login" className="w-full sm:w-auto px-8 py-4 rounded-full bg-terracotta text-white font-semibold font-lexend text-lg hover:bg-terracotta-600 transition shadow-soft-lg hover:shadow-xl hover:-translate-y-1 transform duration-200">
               Get Started Free
             </a>
-            <a href={MOCK_PREVIEW_LINK} className="w-full sm:w-auto px-8 py-4 rounded-full bg-white text-terracotta-800 font-semibold font-lexend text-lg border-2 border-cream-300 hover:border-terracotta-300 hover:bg-cream-50 transition flex items-center justify-center gap-2 group shadow-sm">
+            <a href="/login?redirect=example" className="w-full sm:w-auto px-8 py-4 rounded-full bg-white text-terracotta-800 font-semibold font-lexend text-lg border-2 border-cream-300 hover:border-terracotta-300 hover:bg-cream-50 transition flex items-center justify-center gap-2 group shadow-sm">
               See an Example Day <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition" />
             </a>
           </motion.div>

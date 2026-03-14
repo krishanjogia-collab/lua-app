@@ -175,7 +175,7 @@ export async function GET(request: Request) {
             color: '#5C2D26', // deep-espresso-500
             fontWeight: 500
           }}>
-            <span>Pre-K Curriculum Engine</span>
+            <span>Expert-crafted Pre-K Curriculum</span>
             <span style={{ color: '#E2725B', fontWeight: 600 }}>lualearn.com</span>
           </div>
         </div>

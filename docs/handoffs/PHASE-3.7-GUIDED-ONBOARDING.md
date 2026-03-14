@@ -245,7 +245,7 @@ The onboarding is a single-page, multi-step flow with smooth transitions between
 - While generating: show a warm animation (sprout growing, or dots pulsing gently)
 - Status messages rotate: "Choosing activities...", "Balancing your domains...", "Adding the finishing touches..."
 - After completion: show a preview of Day 1
-- "Explore your calendar" sets `has_onboarded = true` and navigates to `/calendar`
+- "Explore your dashboard" sets `has_onboarded = true` and navigates to `/dashboard` (post-login landing since Phase 3.9)
 
 ---
 
@@ -283,7 +283,7 @@ const response = await fetch('/api/generate-curriculum', {
   body: JSON.stringify({
     theme: selectedTheme,
     philosophy: selectedPhilosophy,
-    month_year: currentMonth, // or current week if weekly cadence
+    monthYear: currentMonth, // camelCase — matches API expectation (see Phase 3.9.2 fix)
     age_group: selectedAgeGroup,
     planning_cadence: selectedCadence,
   }),
@@ -303,7 +303,8 @@ The API route may need minor updates to accept `age_group` and `planning_cadence
 Once this flow is live:
 - Remove or disable `WelcomeModal.tsx`
 - The `has_onboarded` flag now gates the onboarding flow route, not the modal
-- Returning users (`has_onboarded = true`) go straight to `/calendar` as before
+- Returning users (`has_onboarded = true`) go straight to `/dashboard` as before
+- Early access users (`!is_admin && !active_subscription_month`) skip onboarding — handled in `dashboard/page.tsx`
 
 ---
 
@@ -336,11 +337,12 @@ Once this flow is live:
 - [ ] All copy uses warm, educator-friendly language (no tech jargon)
 - [ ] Age group, planning cadence, theme, and philosophy are captured
 - [ ] Curriculum is generated at the end (weekly or monthly based on selection)
-- [ ] User lands on `/calendar` with real content after completing the flow
+- [ ] User lands on `/dashboard` with real content after completing the flow
 - [ ] `has_onboarded` is set to `true` after completion
 - [ ] Returning users skip onboarding entirely
 - [ ] Flow works in both EN and PT
 - [ ] Flow works on mobile (375px) and desktop (1280px)
 - [ ] "Back" button works on every step
-- [ ] User can't skip to calendar without completing the flow
+- [ ] User can't skip to dashboard without completing the flow
+- [ ] Early access users (no `active_subscription_month`) bypass onboarding entirely — they see the waitlist screen instead
 - [ ] Loading state during generation is warm and informative (not a spinner)

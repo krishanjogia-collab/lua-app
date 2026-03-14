@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
+import { headers } from 'next/headers'
 import { Navbar } from '@/components/subscriber/Navbar'
 import { LanguageProvider } from './LanguageContext'
 import { MOCK_PROFILE } from '@/lib/mock-data'
@@ -19,7 +20,15 @@ export default async function SubscriberLayout({ children }: { children: React.R
   } else {
     const supabase = createClient()
     const { data: { user } } = await supabase.auth.getUser()
-    if (!user) redirect('/login')
+    
+    if (!user) {
+      const hdrs = await headers()
+      const pathname = hdrs.get('x-pathname') || ''
+      if (pathname === '/example') {
+        redirect('/login?redirect=example')
+      }
+      redirect('/login')
+    }
 
     const { data: profile, error: profileError } = await supabase
       .from('profiles')
