@@ -10,10 +10,12 @@ const MOCK_MODE = process.env.NEXT_PUBLIC_MOCK_MODE === 'true'
 export default async function SubscriberLayout({ children }: { children: React.ReactNode }) {
   let isAdmin:     boolean  = false
   let initialLang: Language = 'en'
+  let isEarlyAccess: boolean = false
 
   if (MOCK_MODE) {
     isAdmin     = MOCK_PROFILE.is_admin
     initialLang = MOCK_PROFILE.language_preference
+    isEarlyAccess = !isAdmin && !MOCK_PROFILE.active_subscription_month
   } else {
     const supabase = createClient()
     const { data: { user } } = await supabase.auth.getUser()
@@ -21,7 +23,7 @@ export default async function SubscriberLayout({ children }: { children: React.R
 
     const { data: profile, error: profileError } = await supabase
       .from('profiles')
-      .select('is_admin, language_preference')
+      .select('is_admin, language_preference, active_subscription_month')
       .eq('id', user.id)
       .maybeSingle()
 
@@ -32,11 +34,12 @@ export default async function SubscriberLayout({ children }: { children: React.R
 
     isAdmin     = profile?.is_admin ?? false
     initialLang = (profile?.language_preference ?? 'en') as Language
+    isEarlyAccess = !isAdmin && !profile?.active_subscription_month
   }
 
   return (
     <LanguageProvider initial={initialLang}>
-      <Navbar isAdmin={isAdmin} />
+      {!isEarlyAccess && <Navbar isAdmin={isAdmin} />}
       <main className="min-h-screen bg-cream">
         {children}
       </main>

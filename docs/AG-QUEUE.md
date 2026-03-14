@@ -142,7 +142,9 @@ Keep:        White #FFFFFF (card backgrounds)
 | # | Task | Status | Owner | Notes |
 |---|------|--------|-------|-------|
 | 3.9.1.1 | Add early access branch to `DashboardClient.tsx` — detect `!is_admin && !active_subscription_month`, render waitlist confirmation with Instagram CTA + sign-out | `DONE` | AG | See handoff: `PHASE-3.9.1-EARLY-ACCESS.md` |
-| 3.9.1.2 | Fix `dashboard/page.tsx` — early access users hit `has_onboarded` redirect before early access screen renders. Skip onboarding redirect when `!is_admin && !active_subscription_month` | `PENDING` | AG | Bug found in live testing. See updated handoff. |
+| 3.9.1.2 | Fix `dashboard/page.tsx` — early access users hit `has_onboarded` redirect before early access screen renders. Skip onboarding redirect when `!is_admin && !active_subscription_month` | `DONE` | AG | Bug found in live testing. Fixed and deployed. |
+| 3.9.2.1 | Hide Navbar for early access users in subscriber layout + add redirect guards to calendar/vault pages | `DONE` | AG | See handoff: `PHASE-3.9.2-EARLY-ACCESS-LOCKDOWN.md` |
+| 3.9.2.2 | Fix onboarding generation: `month_year` → `monthYear` param mismatch in OnboardingClient.tsx, redirect to `/dashboard` not `/calendar` | `DONE` | AG | See handoff: `PHASE-3.9.2-EARLY-ACCESS-LOCKDOWN.md` |
 
 ---
 

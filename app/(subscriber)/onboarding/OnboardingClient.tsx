@@ -62,16 +62,16 @@ export default function OnboardingClient({ userId }: { userId: string }) {
           philosophy: finalPhilosophy,
           age_group: ageGroup,
           planning_cadence: cadence,
-          month_year: new Date().toISOString().slice(0, 7) // E.g., '2026-03'
+          monthYear: new Date().toISOString().slice(0, 7) // E.g., '2026-03'
         }),
       })
     } catch (e) {
-      console.error('Generation hit a snag, progressing to calendar anyway', e)
+      console.error('[Onboarding] Curriculum generation failed:', e)
     }
 
     // Give the animation 4s minimum even if api is fast so it feels magical
     setTimeout(() => {
-      router.push('/calendar')
+      router.push('/dashboard')
       router.refresh()
     }, 4000)
   }

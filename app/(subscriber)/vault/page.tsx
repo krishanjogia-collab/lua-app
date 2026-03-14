@@ -29,6 +29,9 @@ export default async function VaultPage() {
 
   if (!profile) redirect('/login')
 
+  const isEarlyAccess = !profile.is_admin && !profile.active_subscription_month
+  if (isEarlyAccess) redirect('/dashboard')
+
   let assets: Asset[] = []
 
   if (profile.is_admin) {

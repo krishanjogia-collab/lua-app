@@ -41,6 +41,9 @@ export default async function CalendarPage({ searchParams }: CalendarPageProps) 
 
   if (!profile) redirect('/login')
 
+  const isEarlyAccess = !profile.is_admin && !profile.active_subscription_month
+  if (isEarlyAccess) redirect('/dashboard')
+
   let plan = null
   let availableMonths: string[] = []
 
