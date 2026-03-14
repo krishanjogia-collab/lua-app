@@ -17,7 +17,7 @@ export default async function DayPage({ params }: Props) {
       MOCK_PLAN.daily_data.days.find(d => d.date === date) ??
       MOCK_PLAN.daily_data.days[0]
     if (!dayEntry) notFound()
-    return <DayClient plan={{ id: MOCK_PLAN.id, theme_name: MOCK_PLAN.theme_name }} dayEntry={dayEntry} date={dayEntry.date} />
+    return <DayClient plan={{ id: MOCK_PLAN.id, theme_name: MOCK_PLAN.theme_name }} dayEntry={dayEntry} date={dayEntry.date} completedDomains={[]} />
   }
 
   const supabase = createClient()
@@ -61,5 +61,18 @@ export default async function DayPage({ params }: Props) {
   const dayEntry = plan.daily_data?.days?.find((d: { date: string }) => d.date === date)
   if (!dayEntry) notFound()
 
-  return <DayClient plan={{ id: plan.id, theme_name: plan.theme_name }} dayEntry={dayEntry} date={date} />
+  // Fetch completion state for this user/date
+  const { data: completion } = await supabase
+    .from('completions')
+    .select('domains_completed')
+    .eq('user_id', user.id)
+    .eq('date', date)
+    .maybeSingle()
+    
+  // Convert JSONB object keys where value is true into an array
+  const completedDomains = completion?.domains_completed 
+    ? Object.keys(completion.domains_completed).filter(k => completion.domains_completed[k] === true)
+    : []
+
+  return <DayClient plan={{ id: plan.id, theme_name: plan.theme_name }} dayEntry={dayEntry} date={date} completedDomains={completedDomains} />
 }

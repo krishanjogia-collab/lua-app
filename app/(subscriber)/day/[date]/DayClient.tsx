@@ -21,12 +21,13 @@ const DOMAIN_ORDER: (keyof DayDomains)[] = [
 ]
 
 interface DayClientProps {
-  plan: { id: string; theme_name: string }
-  dayEntry: DailyEntry
-  date:     string
+  plan:             { id: string; theme_name: string }
+  dayEntry:         DailyEntry
+  date:             string
+  completedDomains: string[]
 }
 
-export function DayClient({ plan, dayEntry, date }: DayClientProps) {
+export function DayClient({ plan, dayEntry, date, completedDomains }: DayClientProps) {
   const { lang } = useLanguage()
 
   const dateLabel = formatDate(date, lang)
@@ -111,6 +112,9 @@ export function DayClient({ plan, dayEntry, date }: DayClientProps) {
               domain={domain}
               lang={lang}
               index={i}
+              planId={plan.id}
+              date={date}
+              initialCompleted={completedDomains.includes(key)}
             />
           )
         })}

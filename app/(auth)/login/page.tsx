@@ -48,8 +48,8 @@ export default function LoginPage() {
     }
 
     // Session is now established in the browser client's cookies.
-    // Full page reload ensures the server sees the new cookies.
-    window.location.href = '/calendar'
+    // Hard reload to ensure server components pick up new auth state
+    window.location.href = '/dashboard'
   }
 
   return (

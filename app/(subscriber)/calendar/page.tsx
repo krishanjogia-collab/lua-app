@@ -53,7 +53,14 @@ export default async function CalendarPage() {
     plan = data
   }
 
-  if (!profile.has_onboarded) redirect('/onboarding')
+  let completions: any[] = []
+  if (plan) {
+    const { data } = await supabase
+      .from('completions')
+      .select('*')
+      .eq('user_id', user.id)
+    completions = data || []
+  }
 
   return (
     <div className="min-h-screen bg-[#FDF8E2]">
@@ -62,6 +69,7 @@ export default async function CalendarPage() {
           userId={user.id}
           plan={plan} 
           profile={profile}
+          completions={completions}
         />
       </div>
     </div>

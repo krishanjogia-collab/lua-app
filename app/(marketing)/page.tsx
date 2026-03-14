@@ -6,9 +6,9 @@ export default async function LandingPage() {
   const supabase = createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
-  // Authenticated users go straight to calendar
+  // Authenticated users go straight to dashboard
   if (user) {
-    redirect('/calendar')
+    redirect('/dashboard')
   }
 
   return <LandingClient />

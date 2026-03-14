@@ -24,3 +24,8 @@ This project uses the proven **two-agent workflow** established in the `cb-ba-pl
 1. Review the `SETUP.md` file in the root directory for database schema and app workflow details.
 2. Initialize the `docs/AG-QUEUE.md` file with our first set of architectural or scaffolding tasks.
 3. Create the first handoff document in `docs/handoffs/` for AG to begin implementation.
+
+## Memory Notes & Hard Rules
+1. **Supabase Query Errors masquerading as Auth Loops**: When adding new columns to the `profiles` table (or any table), if the live Postgres DB hasn't been migrated yet, `supabase.from('profiles').select().single()` will throw a `PostgrestError`. It will **NOT** throw an exception natively; instead it returns `{ data: null, error: {...} }`. 
+   - **CRITICAL:** If you simply check `if (!profile) redirect('/login')` without checking the `error` object first, you will create an endless, confusing authentication loop. 
+   - **Always** destructure and explicitly check `error` before redirecting. Use real Error Boundaries.

@@ -14,7 +14,7 @@ export async function POST(request: Request) {
   // Removed admin check to allow Sprout onboarding generation
   const { data: profile, error: profileError } = await supabase
     .from('profiles')
-    .select('is_admin')
+    .select('is_admin, bilingual_mode')
     .eq('id', user.id)
     .single()
 
@@ -36,7 +36,7 @@ export async function POST(request: Request) {
     }
 
     const weekdays = getWeekdaysInMonth(monthYear)
-    const dailyData = await generateCurriculum(theme, monthYear, philosophy, weekdays)
+    const dailyData = await generateCurriculum(theme, monthYear, philosophy, weekdays, !!profile.bilingual_mode)
 
     // Upsert into curriculum_plans (draft — not yet published)
     const { data: plan, error: dbError } = await supabase

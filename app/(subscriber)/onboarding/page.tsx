@@ -52,7 +52,7 @@ export default async function OnboardingPage() {
   }
 
   if (profile?.has_onboarded) {
-    redirect('/calendar')
+    redirect('/dashboard')
   }
 
   return <OnboardingClient userId={user.id} />

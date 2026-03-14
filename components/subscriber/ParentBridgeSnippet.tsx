@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { Copy, Check, Users } from 'lucide-react'
 import { ShareButton } from '@/components/ui/ShareButton'
-import type { DomainActivity, Language } from '@/lib/types'
+import { getActivityDescription, type DomainActivity, type Language } from '@/lib/types'
 
 interface ParentBridgeSnippetProps {
   domain: DomainActivity | undefined
@@ -17,7 +17,7 @@ export function ParentBridgeSnippet({ domain, lang, date, hideShare }: ParentBri
 
   if (!domain) return null
 
-  const text = lang === 'en' ? domain.en : domain.pt
+  const text = getActivityDescription(domain, lang)
 
   const fullSnippet = lang === 'en'
     ? `📚 Today's Learning - ${new Date(date + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}\n\n${text}\n\nWith love, the Lua Learn team 🌿`

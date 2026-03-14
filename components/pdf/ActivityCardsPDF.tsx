@@ -1,6 +1,7 @@
 import React from 'react'
 import { Page, Text, View, Document, StyleSheet, Font } from '@react-pdf/renderer'
 import type { DailyEntry } from '@/lib/types'
+import { getActivityDescription } from '@/lib/types'
 
 // Re-register fonts just in case this is loaded independently
 Font.register({
@@ -146,9 +147,9 @@ export function ActivityCardsPDF({ dayEntry, lang }: ActivityCardsPDFProps) {
             if (!content) return null
             const info = DOMAIN_INFO[key]
             const title = lang === 'en' ? content.title : (content as any).pt_title || content.title
-            let desc = lang === 'en' ? content.en : content.pt
+            let desc = getActivityDescription(content, lang)
             // Truncate desc if it's way too long to fit in a card
-            if (desc.length > 250) desc = desc.slice(0, 247) + '...'
+            if (desc && desc.length > 250) desc = desc.slice(0, 247) + '...'
             const materials = content.materials || []
 
             return (
@@ -166,7 +167,7 @@ export function ActivityCardsPDF({ dayEntry, lang }: ActivityCardsPDFProps) {
                     <Text style={styles.metaLabel}>{lang === 'en' ? 'Materials:' : 'Materiais:'}</Text>
                     <View style={styles.materialsList}>
                       {materials.slice(0, 4).map((m: any, i: number) => (
-                        <Text key={i} style={styles.metaText}>• {lang === 'en' ? m.en : m.pt}</Text>
+                        <Text key={i} style={styles.metaText}>• {typeof m === 'string' ? m : m.item}</Text>
                       ))}
                       {materials.length > 4 && (
                         <Text style={styles.metaText}>• +{materials.length - 4} {lang === 'en' ? 'more' : 'mais'}</Text>

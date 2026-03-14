@@ -217,7 +217,7 @@ export function DraftReview({ data, planId, onChange }: DraftReviewProps) {
                         {/* EN field */}
                         <FieldEditor
                           label="EN"
-                          value={domain.en}
+                          value={domain.en || domain.description || ''}
                           isEditing={isEditing && editingField?.field === 'en'}
                           editValue={editValue}
                           onEdit={v => startEdit(day.date, dKey, 'en', v)}
@@ -229,7 +229,7 @@ export function DraftReview({ data, planId, onChange }: DraftReviewProps) {
                         {/* PT field */}
                         <FieldEditor
                           label="PT"
-                          value={domain.pt}
+                          value={domain.pt || domain.description_pt || ''}
                           isEditing={isEditing && editingField?.field === 'pt'}
                           editValue={editValue}
                           onEdit={v => startEdit(day.date, dKey, 'pt', v)}
@@ -239,7 +239,7 @@ export function DraftReview({ data, planId, onChange }: DraftReviewProps) {
                           extra={
                             <button
                               className="text-xs text-sage-400 hover:text-sage-600 font-inter transition ml-1"
-                              onClick={() => autoTranslate(day.date, dKey, domain.en)}
+                              onClick={() => autoTranslate(day.date, dKey, domain.en || domain.description || '')}
                               disabled={!!isTranslating}
                             >
                               {isTranslating ? 'Translating…' : 'Auto-translate'}

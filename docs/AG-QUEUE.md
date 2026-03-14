@@ -124,15 +124,49 @@ Keep:        White #FFFFFF (card backgrounds)
 
 ---
 
-## Phase 4: Weekly View & Flexibility
+## Phase 3.9: Post-Login Dashboard
+> Replace `/calendar` as the post-login landing with a purpose-built dashboard. Today's plan, this week, quick actions, month theme.
+
+| # | Task | Status | Owner | Notes |
+|---|------|--------|-------|-------|
+| 3.9.1 | Create `app/(subscriber)/dashboard/page.tsx` (server component) + `DashboardClient.tsx` (client UI) | `DONE` | AG | |
+| 3.9.2 | Update routing: login → `/dashboard`, onboarding → `/dashboard`, middleware mock → `/dashboard`, marketing page → `/dashboard` | `DONE` | AG | |
+| 3.9.3 | Update Navbar: add Home/Dashboard as first link, logo links to `/dashboard` | `DONE` | AG | |
+| 3.9.4 | Clean up calendar page (remove `has_onboarded` check, keep as standalone view) | `DONE` | AG | |
+
+---
+
+## Phase 4.1: Execution-Ready Activity Cards (HIGH PRIORITY)
+> The core product differentiator. Current activity cards are inspiration-level; teachers need execution-ready content with steps, materials quantities, differentiation, safety notes, and more. Also makes bilingual content opt-in rather than forced.
+
+| # | Task | Status | Owner | Notes |
+|---|------|--------|-------|-------|
+| 4.1.1 | Update `lib/types.ts` — new DomainActivity interface (steps, MaterialItem, duration breakdown, differentiation, etc.) + backward compat helper `isRichActivity()` | `PENDING` | AG | See handoff: `PHASE-4.1-ACTIVITY-DEPTH.md`. Must support legacy data. |
+| 4.1.2 | Update `lib/mock-data.ts` — add rich mock data for at least 1 full day using new schema | `PENDING` | AG | Example "Starlight Sensory Station" in handoff |
+| 4.1.3 | Redesign `DailyFlowCard.tsx` — collapsed/expanded card with all new fields, legacy fallback | `PENDING` | AG | Collapsed: title + description + badges. Expanded: steps, materials table, differentiation, safety, vocabulary pills |
+| 4.1.4 | Update `lib/gemini.ts` — new specialist prompts requesting rich output, bilingual conditional block | `PENDING` | AG | Critical: bilingual fields only generated when `bilingualMode === true` |
+| 4.1.5 | Update `app/api/generate-curriculum/route.ts` — pass `bilingualMode` from profile to generation pipeline | `PENDING` | AG | |
+| 4.1.6 | Add `bilingual_mode` and `secondary_language` columns to profiles table (migration) | `PENDING` | AG | `ALTER TABLE profiles ADD COLUMN bilingual_mode BOOLEAN DEFAULT FALSE` |
+| 4.1.7 | Update onboarding flow — add bilingual opt-in step | `PENDING` | AG | Default: English only. Optional: "Add Portuguese translations?" |
+| 4.1.8 | Test — generate one plan with new prompts, verify output quality and card rendering | `PENDING` | AG | Show to Luana for feedback |
+
+### Implementation priority:
+Tasks 4.1.1-4.1.3 (schema + mock + UI) can be done immediately with mock data.
+Tasks 4.1.4-4.1.5 (Gemini prompt + API) are the generation pipeline changes.
+Tasks 4.1.6-4.1.7 (DB + onboarding) are the bilingual opt-in plumbing.
+Task 4.1.8 is end-to-end validation.
+
+---
+
+## Phase 4.5: Weekly View & Flexibility
 > Some teachers plan week-by-week. Add weekly view and generation options.
 
 | # | Task | Status | Owner | Notes |
 |---|------|--------|-------|-------|
-| 4.1 | Add week view toggle/tab to subscriber calendar page | `PENDING` | AG | |
-| 4.2 | Build "This Week at a Glance" summary card component | `PENDING` | AG | |
-| 4.3 | Add weekly generation option to Studio (pass week's dates to existing Gemini pipeline) | `PENDING` | AG | |
-| 4.4 | Consider schema changes: weekly plans as subset of monthly, or separate entries | `PENDING` | Claude | Architecture decision needed |
+| 4.5.1 | Add week view toggle/tab to subscriber calendar page | `PENDING` | AG | |
+| 4.5.2 | Build "This Week at a Glance" summary card component | `PENDING` | AG | |
+| 4.5.3 | Add weekly generation option to Studio (pass week's dates to existing Gemini pipeline) | `PENDING` | AG | |
+| 4.5.4 | Consider schema changes: weekly plans as subset of monthly, or separate entries | `PENDING` | Claude | Architecture decision needed |
 
 ---
 
@@ -141,11 +175,11 @@ Keep:        White #FFFFFF (card backgrounds)
 
 | # | Task | Status | Owner | Notes |
 |---|------|--------|-------|-------|
-| 5.1 | Create `completions` DB table + migration (user_id, date, domains_completed JSONB) | `PENDING` | AG | |
-| 5.2 | Add "Mark Day Complete" button to DayClient + domain-level completion checkboxes | `PENDING` | AG | |
-| 5.3 | Replace passive date-based checkmarks in CalendarGrid with action-based completion indicators | `PENDING` | AG | |
-| 5.4 | Build streak counter (computed from completions) + display in calendar header | `PENDING` | AG | |
-| 5.5 | Add monthly completion badge/celebration when all school days marked complete | `PENDING` | AG | |
+| 5.1 | Create `completions` DB table + migration (user_id, date, domains_completed JSONB) | `DONE` | AG | |
+| 5.2 | Add "Mark Day Complete" button to DayClient + domain-level completion checkboxes | `DONE` | AG | Added Checkboxes to the DailyFlowCard |
+| 5.3 | Replace passive date-based checkmarks in CalendarGrid with action-based completion indicators | `DONE` | AG | |
+| 5.4 | Build streak counter (computed from completions) + display in calendar header | `DONE` | AG | |
+| 5.5 | Add monthly completion badge/celebration when all school days marked complete | `DONE` | AG | |
 
 ---
 

@@ -12,6 +12,7 @@ export default async function StudioPage() {
 
   const supabase = createClient()
 
+  // Auth check handled by (subscriber) layout — just need admin gate
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
@@ -26,7 +27,7 @@ export default async function StudioPage() {
     throw new Error(`[StudioPage] Profile fetch failed: ${profileError.message}`)
   }
 
-  if (!profile?.is_admin) redirect('/calendar')
+  if (!profile?.is_admin) redirect('/dashboard')
 
   const { data: plans, error: plansError } = await supabase
     .from('curriculum_plans')

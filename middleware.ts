@@ -13,7 +13,7 @@ export async function middleware(request: NextRequest) {
   if (process.env.NEXT_PUBLIC_MOCK_MODE === 'true') {
     if (pathname === '/') {
       const url = request.nextUrl.clone()
-      url.pathname = '/calendar'
+      url.pathname = '/dashboard'
       return NextResponse.redirect(url)
     }
     return NextResponse.next({ request })

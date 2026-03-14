@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { CheckCircle2, Lock } from 'lucide-react'
 import { DownloadWeekButton } from '@/components/ui/DownloadWeekButton'
-import type { DailyEntry, CurriculumPlan } from '@/lib/types'
+import type { DailyEntry, CurriculumPlan, CompletionRecord } from '@/lib/types'
 import { cn, todayISO } from '@/lib/utils'
 
 interface CalendarGridProps {
@@ -12,12 +12,13 @@ interface CalendarGridProps {
   monthYear: string
   days:      DailyEntry[]
   lang:      'en' | 'pt'
+  completions?: CompletionRecord[]
 }
 
 const WEEKDAY_EN = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 const WEEKDAY_PT = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb']
 
-export function CalendarGrid({ plan, monthYear, days, lang }: CalendarGridProps) {
+export function CalendarGrid({ plan, monthYear, days, lang, completions = [] }: CalendarGridProps) {
   const router = useRouter()
   const today  = todayISO()
 
@@ -94,18 +95,22 @@ export function CalendarGrid({ plan, monthYear, days, lang }: CalendarGridProps)
 
                 const entry     = dayMap.get(cell.date)
                 const isToday   = cell.date === today
-                const isPast    = cell.date < today
                 const hasEntry  = !!entry
                 const isSunday  = new Date(cell.date + 'T12:00:00').getDay() === 0
                 const isSaturday = new Date(cell.date + 'T12:00:00').getDay() === 6
                 const isWeekend = isSunday || isSaturday
+
+                // Check gamification completion
+                // Consider the day completed if the database has a record where at least one domain is marked completed
+                const completionRecord = completions.find(c => c.date === cell.date)
+                const isCompleted = !!completionRecord && Object.values(completionRecord.domains_completed || {}).some(val => val === true)
 
                 const formatted = new Date(cell.date + 'T12:00:00').toLocaleDateString(
                   lang === 'en' ? 'en-US' : 'pt-BR',
                   { weekday: 'long', month: 'long', day: 'numeric' }
                 )
                 const ariaLabel = isToday   ? (lang === 'en' ? `Today, ${formatted}`                : `Hoje, ${formatted}`)
-                  : hasEntry && isPast      ? (lang === 'en' ? `Completed, ${formatted}`             : `Concluído, ${formatted}`)
+                  : isCompleted             ? (lang === 'en' ? `Completed, ${formatted}`             : `Concluído, ${formatted}`)
                   : hasEntry                ? (lang === 'en' ? `Curriculum available, ${formatted}`  : `Currículo disponível, ${formatted}`)
                   : isWeekend               ? (lang === 'en' ? `Weekend, ${formatted}`               : `Fim de semana, ${formatted}`)
                   :                           (lang === 'en' ? `Locked, ${formatted}`                : `Bloqueado, ${formatted}`)
@@ -121,20 +126,20 @@ export function CalendarGrid({ plan, monthYear, days, lang }: CalendarGridProps)
                     onClick={() => hasEntry && router.push(`/day/${cell.date}`)}
                     disabled={!hasEntry}
                     className={cn(
-                      'aspect-square min-h-[48px] flex flex-col items-center justify-center rounded-2xl text-sm font-medium font-inter transition-all duration-200 z-0',
+                      'aspect-square min-h-[48px] flex flex-col items-center justify-center rounded-2xl text-sm font-medium font-inter transition-all duration-200 z-0 relative overflow-hidden',
                       isToday && 'bg-terracotta text-white shadow-soft ring-2 ring-terracotta-300',
-                      !isToday && hasEntry && isPast  && 'bg-sage-100 text-sage-700 hover:bg-sage-200 cursor-pointer',
-                      !isToday && hasEntry && !isPast && 'bg-white text-terracotta-800 shadow-soft hover:shadow-soft-lg hover:bg-terracotta-50 cursor-pointer',
-                      !hasEntry && isWeekend && 'bg-cream-200 text-sage-300 cursor-default',
-                      !hasEntry && !isWeekend && 'bg-cream-200 text-sage-300 cursor-not-allowed',
+                      !isToday && hasEntry && isCompleted  && 'bg-sage-100 text-sage-800 hover:bg-sage-200 cursor-pointer shadow-inner',
+                      !isToday && hasEntry && !isCompleted && 'bg-white text-terracotta-800 shadow-soft hover:shadow-soft-lg hover:bg-terracotta-50 cursor-pointer ring-1 ring-cream-300 ring-inset',
+                      !hasEntry && isWeekend && 'bg-cream-200 text-sage-300 cursor-default opacity-60',
+                      !hasEntry && !isWeekend && 'bg-cream-200 text-sage-300 cursor-not-allowed opacity-60',
                     )}
                   >
-                    <span className={cn('text-sm', isToday && 'font-bold')}>{cell.num}</span>
-                    {hasEntry && isPast && !isToday && (
-                      <CheckCircle2 className="w-3 h-3 text-sage-400 mt-0.5" strokeWidth={1.5} />
+                    <span className={cn('text-sm relative z-10', isToday && 'font-bold')}>{cell.num}</span>
+                    {hasEntry && isCompleted && !isToday && (
+                      <CheckCircle2 className="w-4 h-4 text-sage-500 mt-0.5 relative z-10" strokeWidth={2} />
                     )}
                     {!hasEntry && !isWeekend && (
-                      <Lock className="w-3 h-3 opacity-30 mt-0.5" strokeWidth={1.5} />
+                      <Lock className="w-3 h-3 opacity-30 mt-0.5 relative z-10" strokeWidth={1.5} />
                     )}
                   </motion.button>
                 )

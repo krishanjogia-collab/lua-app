@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { Sprout, CalendarDays, BookOpen, LogOut, Pencil, Globe } from 'lucide-react'
+import { Sprout, CalendarDays, BookOpen, LogOut, Pencil, Globe, Home } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { useLanguage } from '@/app/(subscriber)/LanguageContext'
 import { cn } from '@/lib/utils'
@@ -23,6 +23,7 @@ export function Navbar({ isAdmin }: NavbarProps) {
   }
 
   const links = [
+    { href: '/dashboard', label: lang === 'en' ? 'Home' : 'Início', icon: Home },
     { href: '/calendar', label: lang === 'en' ? 'Calendar' : 'Calendário', icon: CalendarDays },
     { href: '/vault',    label: lang === 'en' ? 'Resources' : 'Recursos',   icon: BookOpen },
   ]
@@ -31,7 +32,7 @@ export function Navbar({ isAdmin }: NavbarProps) {
     <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-cream-400 shadow-soft">
       <div className="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
         {/* Logo */}
-        <Link href="/calendar" className="flex items-center gap-2.5 group">
+        <Link href="/dashboard" className="flex items-center gap-2.5 group">
           <div className="w-9 h-9 rounded-2xl bg-terracotta flex items-center justify-center shadow-soft group-hover:bg-terracotta-600 transition">
             <Sprout className="w-5 h-5 text-white" strokeWidth={1.5} />
           </div>
@@ -46,7 +47,7 @@ export function Navbar({ isAdmin }: NavbarProps) {
               href={href}
               className={cn(
                 'flex items-center gap-1.5 px-4 py-2 rounded-2xl text-sm font-medium font-inter transition',
-                pathname.startsWith(href)
+                pathname === href || pathname.startsWith(`${href}/`)
                   ? 'bg-terracotta-50 text-terracotta-700'
                   : 'text-sage-700 hover:bg-cream-200'
               )}
@@ -101,7 +102,7 @@ export function Navbar({ isAdmin }: NavbarProps) {
             href={href}
             className={cn(
               'flex-1 flex flex-col items-center gap-0.5 py-2.5 text-xs font-inter transition',
-              pathname.startsWith(href)
+              pathname === href || pathname.startsWith(`${href}/`)
                 ? 'text-terracotta bg-terracotta-50'
                 : 'text-sage-500 hover:bg-cream-200'
             )}

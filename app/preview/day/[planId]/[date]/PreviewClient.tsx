@@ -6,7 +6,7 @@ import { ArrowRight, Sparkles } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { ParentBridgeSnippet } from '@/components/subscriber/ParentBridgeSnippet'
 import { formatDate } from '@/lib/utils'
-import type { DailyEntry } from '@/lib/types'
+import { getActivityDescription, type DailyEntry } from '@/lib/types'
 
 interface PreviewClientProps {
   plan: {
@@ -48,7 +48,7 @@ const DOMAIN_ICONS: Record<string, { icon: string; en: string; pt: string }> = {
   }
 
   const teaserText = teaserActivity
-    ? (lang === 'en' ? teaserActivity.en : teaserActivity.pt).slice(0, 120) + '...'
+    ? getActivityDescription(teaserActivity, lang).slice(0, 120) + '...'
     : ''
 
   return (

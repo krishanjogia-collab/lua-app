@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { createBrowserClient } from '@supabase/ssr'
 import { ChevronRight, ChevronLeft, Sparkles, BookOpen, Leaf, Users } from 'lucide-react'
 
-type OnboardingStep = 1 | 2 | 3 | 4 | 5 | 6
+type OnboardingStep = 1 | 2 | 3 | 4 | 5 | 6 | 7
 
 export default function OnboardingClient({ userId }: { userId: string }) {
   const router = useRouter()
@@ -24,10 +24,11 @@ export default function OnboardingClient({ userId }: { userId: string }) {
   const [customTheme, setCustomTheme] = useState('')
   const [isCustomTheme, setIsCustomTheme] = useState(false)
   const [philosophy, setPhilosophy] = useState<'montessori' | 'reggio' | 'play-based' | 'flexible'>('flexible')
+  const [bilingual, setBilingual] = useState(false)
 
   const [isGenerating, setIsGenerating] = useState(false)
 
-  const handleNext = () => setStep(s => Math.min(6, s + 1) as OnboardingStep)
+  const handleNext = () => setStep(s => Math.min(7, s + 1) as OnboardingStep)
   const handleBack = () => setStep(s => Math.max(1, s - 1) as OnboardingStep)
 
   const generateAndFinish = async () => {
@@ -43,7 +44,9 @@ export default function OnboardingClient({ userId }: { userId: string }) {
         .update({ 
           has_onboarded: true,
           planning_cadence: cadence,
-          age_group: ageGroup
+          age_group: ageGroup,
+          bilingual_mode: bilingual,
+          secondary_language: bilingual ? 'pt' : null
         })
         .eq('id', userId)
     }
@@ -92,7 +95,7 @@ export default function OnboardingClient({ userId }: { userId: string }) {
 
   const renderStepIndicators = () => (
     <div className="flex justify-center gap-2 mb-8">
-      {[1, 2, 3, 4, 5, 6].map(i => (
+      {[1, 2, 3, 4, 5, 6, 7].map(i => (
         <div 
           key={i} 
           className={`h-1.5 rounded-full transition-all duration-300 ${
@@ -286,8 +289,49 @@ export default function OnboardingClient({ userId }: { userId: string }) {
                 </div>
               )}
 
-              {/* ------------ STEP 5: PHILOSOPHY ------------ */}
+              {/* ------------ STEP 5: BILINGUAL ------------ */}
               {step === 5 && (
+                <div>
+                  <h2 className="text-xl font-lexend font-semibold text-deep-espresso mb-2">Would you like a bilingual curriculum?</h2>
+                  <p className="text-deep-espresso/60 text-sm mb-6">Our expert curriculum engine can easily produce bilingual plans.</p>
+                  
+                  <div className="space-y-3 mb-8">
+                    <button 
+                      onClick={() => setBilingual(false)}
+                      className={`w-full flex items-start text-left p-4 rounded-2xl border-2 transition gap-4 ${!bilingual ? 'border-terracotta-500 bg-terracotta-50' : 'border-gray-100 bg-white hover:border-terracotta-200'}`}
+                    >
+                      <span className="text-2xl pt-1">🇺🇸</span>
+                      <div>
+                        <strong className="block text-base text-deep-espresso mb-1">English only</strong>
+                        <span className="text-sm text-deep-espresso/70 leading-snug">Generate your curriculum in English.</span>
+                      </div>
+                    </button>
+
+                    <button 
+                      onClick={() => setBilingual(true)}
+                      className={`w-full flex items-start text-left p-4 rounded-2xl border-2 transition gap-4 ${bilingual ? 'border-terracotta-500 bg-terracotta-50' : 'border-gray-100 bg-white hover:border-terracotta-200'}`}
+                    >
+                      <span className="text-2xl pt-1">🇧🇷</span>
+                      <div>
+                        <strong className="block text-base text-deep-espresso mb-1">English + Portuguese</strong>
+                        <span className="text-sm text-deep-espresso/70 leading-snug">Generate steps, descriptions, and vocabulary in both languages.</span>
+                      </div>
+                    </button>
+                  </div>
+
+                  <div className="flex justify-between">
+                    <button onClick={handleBack} className="flex items-center gap-1 text-sm text-deep-espresso/50 hover:text-deep-espresso transition font-medium">
+                      <ChevronLeft className="w-4 h-4" /> Back
+                    </button>
+                    <button onClick={handleNext} className="bg-deep-espresso text-white px-6 py-2.5 rounded-xl text-sm font-medium hover:bg-gray-800 transition">
+                      Next &rarr;
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* ------------ STEP 6: PHILOSOPHY ------------ */}
+              {step === 6 && (
                 <div>
                   <h2 className="text-xl font-lexend font-semibold text-deep-espresso mb-2">How do you like to teach?</h2>
                   <p className="text-deep-espresso/60 text-sm mb-6">This helps us shape activities that feel right for your classroom.</p>
@@ -325,8 +369,8 @@ export default function OnboardingClient({ userId }: { userId: string }) {
                 </div>
               )}
 
-              {/* ------------ STEP 6: GENERATING ------------ */}
-              {step === 6 && (
+              {/* ------------ STEP 7: GENERATING ------------ */}
+              {step === 7 && (
                 <div className="text-center py-12 flex flex-col items-center justify-center">
                   <motion.div 
                     animate={{ scale: [1, 1.1, 1], rotate: [0, 5, -5, 0] }}

@@ -39,7 +39,7 @@ export default function LandingClient() {
           </motion.h1>
 
           <motion.p variants={fadeUp} className="text-lg md:text-xl font-inter text-sage-700 leading-relaxed mb-10 max-w-2xl mx-auto">
-            Created by an educator with 15+ years of experience across 3 continents. Plan a full month of play-based, bilingual activities in minutes, not hours.
+            Created by an educator with 15+ years of experience across 3 continents. Plan a full month of play-based, classroom-ready activities in minutes, not hours.
           </motion.p>
           
           <motion.div variants={fadeUp} className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -53,9 +53,9 @@ export default function LandingClient() {
 
           {/* Differentiators */}
           <motion.div variants={fadeUp} className="mt-16 flex flex-wrap justify-center gap-6 text-sm font-medium font-inter text-sage-600">
-            <div className="flex items-center gap-1.5"><Globe className="w-4 h-4 text-terracotta-400" /> Bilingual EN/PT</div>
             <div className="flex items-center gap-1.5"><Layers className="w-4 h-4 text-terracotta-400" /> 6 Learning Areas Daily</div>
             <div className="flex items-center gap-1.5"><Frame className="w-4 h-4 text-terracotta-400" /> Print-Ready PDFs</div>
+            <div className="flex items-center gap-1.5"><Globe className="w-4 h-4 text-terracotta-400" /> Optional Bilingual (EN/PT)</div>
           </motion.div>
         </motion.div>
       </section>
@@ -77,7 +77,7 @@ export default function LandingClient() {
             <div className="bg-cream-50 p-8 rounded-3xl border border-cream-200 flex flex-col items-center text-center shadow-sm relative md:-top-4">
               <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center text-xl font-bold font-lexend text-terracotta mb-6 shadow-sm border border-cream-100">2</div>
               <h3 className="text-xl font-semibold font-lexend text-terracotta-900 mb-3">Your Curriculum Is Generated</h3>
-              <p className="text-sm text-sage-600 font-inter leading-relaxed">Lua Learn creates a full month of daily activities across 6 areas of child development, in both Portuguese and English.</p>
+              <p className="text-sm text-sage-600 font-inter leading-relaxed">Lua Learn creates a full month of daily activities across 6 areas of child development, with step-by-step instructions, materials lists, and differentiation tips.</p>
             </div>
             <div className="bg-cream-50 p-8 rounded-3xl border border-cream-200 flex flex-col items-center text-center shadow-sm">
               <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center text-xl font-bold font-lexend text-terracotta mb-6 shadow-sm border border-cream-100">3</div>
@@ -132,7 +132,7 @@ export default function LandingClient() {
             <ul className="text-terracotta-100 font-inter text-left max-w-md mx-auto space-y-3 mb-10 text-lg">
               <li className="flex gap-3"><Check /> Home daycare providers planning solo</li>
               <li className="flex gap-3"><Check /> Lead teachers designing for their room</li>
-              <li className="flex gap-3"><Check /> Bilingual educators (EN/PT)</li>
+              <li className="flex gap-3"><Check /> Educators wanting classroom-ready plans</li>
             </ul>
             <a href="/login" className="inline-block px-10 py-4 rounded-full bg-white text-terracotta-900 font-bold font-lexend text-lg hover:bg-cream-100 transition shadow-lg hover:-translate-y-1 transform duration-200">
               Join the Early Access Beta

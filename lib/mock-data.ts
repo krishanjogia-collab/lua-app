@@ -22,12 +22,36 @@ export const MOCK_DAILY_DATA: DailyData = {
       day_number: 1,
       domains: {
         sensory_layout: {
-          title:     'Starlight Sensory Station',
-          activity:  'Fill a large bin with black kinetic sand and hide star-shaped gems, moon rocks (smooth grey stones), and constellation cards inside. Place UV flashlights at the station to "discover" stars hiding in the dark sand.',
-          materials: ['black kinetic sand', 'star-shaped gems', 'smooth grey stones', 'UV flashlights', 'constellation cards'],
-          duration:  '25 minutes',
-          en:        'Transform your sensory table into a corner of the cosmos. Children reach into the black sand galaxy to uncover sparkling stars and hidden planets, building tactile awareness and curiosity about the universe beyond our world.',
-          pt:        'Transforme a mesa sensorial em um canto do cosmos. As crianças mergulham as mãos na areia galáctica para descobrir estrelas brilhantes e planetas escondidos, desenvolvendo a percepção tátil e a curiosidade sobre o universo.',
+          title: "Starlight Sensory Station",
+          description: "Children explore a space-themed sensory bin with moon sand, star confetti, and scooping tools.",
+          steps: [
+            "Cover the table with a dark cloth or black butcher paper to set the 'night sky' scene.",
+            "Fill the sensory bin with moon sand (8 cups flour + 1 cup baby oil).",
+            "Add silver star confetti, small planet figurines, and glow-in-the-dark stars.",
+            "Invite 4 children at a time. Model scooping and pouring: 'I'm filling my crater!'",
+            "Ask open-ended questions: 'What does the moon sand feel like? Is it heavy or light?'",
+            "When the rain stick sounds, guide children to pour sand back and wash hands."
+          ],
+          materials: [
+            { item: "Large sensory bin", quantity: "1" },
+            { item: "Moon sand (flour + baby oil)", quantity: "8 cups flour, 1 cup oil", substitute: "Cloud dough or kinetic sand" },
+            { item: "Star confetti", quantity: "1 bag" },
+            { item: "Small scoops and funnels", quantity: "1 per child" },
+            { item: "Planet figurines", quantity: "5-6", substitute: "Painted rocks" },
+            { item: "Dark cloth/butcher paper", quantity: "1 sheet" }
+          ],
+          duration: { setup: "10 min", activity: "20 min", cleanup: "10 min" },
+          group_size: "4 children at a time",
+          space: "indoor",
+          differentiation: {
+            easier: "Remove figurines to reduce distraction. Use only 2 scooping tools. Focus on the tactile experience.",
+            harder: "Add counting cards ('scoop 3 stars'). Introduce size sorting: big planets vs. small stars."
+          },
+          safety_note: "Moon sand contains flour — check for wheat allergies. Substitute with corn starch. Supervise to prevent ingestion.",
+          cleanup_protocol: "Children help scoop sand back into bin. Wipe table with damp cloth then sanitizer. Sweep floor.",
+          transition_cue: "When you hear the rain stick, it's time to pour your moon sand back into the big crater!",
+          assessment_cue: "Observe fine motor control during scooping. Note children who use descriptive language (soft, grainy, sparkly).",
+          vocabulary: ["texture", "pour", "scoop", "crater", "orbit"]
         },
         cognitive_literacy: {
           title:     'Planet Names Vocabulary Launch',
