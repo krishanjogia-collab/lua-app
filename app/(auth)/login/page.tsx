@@ -35,18 +35,17 @@ export default function LoginPage() {
     setLoading(true)
     setError(null)
 
-    const res = await fetch('/api/auth/verify-otp', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, token: otp }),
+    const { error } = await supabase.auth.verifyOtp({
+      email,
+      token: otp,
+      type: 'email',
     })
 
     setLoading(false)
-    if (res.ok) {
-      window.location.href = '/calendar'
+    if (error) {
+      setError(error.message || 'Invalid code. Please try again.')
     } else {
-      const data = await res.json()
-      setError(data.error || 'Invalid code. Please try again.')
+      window.location.href = '/calendar'
     }
   }
 
