@@ -78,12 +78,30 @@ Keep:        White #FFFFFF (card backgrounds)
 
 | # | Task | Status | Owner | Notes |
 |---|------|--------|-------|-------|
-| 3.1 | Build public landing page at `/` (hero, features, example day preview, CTA) | `PENDING` | AG | See handoff: `PHASE-3-LANDING-ONBOARDING.md` |
-| 3.2 | Update middleware to serve landing page to unauthenticated visitors, redirect authenticated users to `/calendar` | `PENDING` | AG | |
-| 3.3 | Add first-time user detection (`has_onboarded` profile flag or creation timestamp check) | `PENDING` | AG | |
-| 3.4 | Build welcome modal/walkthrough explaining Calendar, Daily Flow, Domains, Parent Bridge, and Vault | `PENDING` | AG | |
-| 3.5 | Update login/signup page copy and flow (distinguish new vs returning users) | `PENDING` | AG | |
-| 3.6 | Improve empty states with actionable guidance (e.g., "Your teacher is preparing this month's curriculum!") | `PENDING` | AG | Done in Phase 0.7 — verify sufficient |
+| 3.1 | Build public landing page at `/` (hero, features, example day preview, CTA) | `DONE` | AG | See handoff: `PHASE-3-LANDING-ONBOARDING.md` |
+| 3.2 | Update middleware to serve landing page to unauthenticated visitors, redirect authenticated users to `/calendar` | `DONE` | AG | Claude also fixed auth cookie propagation on redirects |
+| 3.3 | Add first-time user detection (`has_onboarded` profile flag or creation timestamp check) | `DONE` | AG | Migration file created; needs manual SQL execution in Supabase |
+| 3.4 | Build welcome modal/walkthrough explaining Calendar, Daily Flow, Domains, Parent Bridge, and Vault | `DONE` | AG | |
+| 3.5 | Update login/signup page copy and flow (distinguish new vs returning users) | `DONE` | AG | Claude updated copy for brand alignment |
+| 3.6 | Improve empty states with actionable guidance (e.g., "Your teacher is preparing this month's curriculum!") | `DONE` | AG | Verified sufficient from Phase 0.7 |
+
+---
+
+## Phase 3.5: Brand Voice & Naming Sweep
+> Align all copy with the "Lua Learn" brand name and educator-first positioning. AI is the enabler behind the scenes, NOT the brand identity.
+
+| # | Task | Status | Owner | Notes |
+|---|------|--------|-------|-------|
+| 3.5.1 | Replace all instances of "Lua" (standalone) with "Lua Learn" across the app (Navbar, footer, metadata, PDF headers, OG images, share cards, email templates) | `PENDING` | AG | Claude already updated login page and landing page hero. AG to sweep the rest. |
+| 3.5.2 | Remove or rephrase all "AI-powered" / "AI generates" messaging throughout the app | `PENDING` | AG | Replace with educator-expertise framing. See `memory/feedback_branding.md` for guidance. The value prop is Luana's 15+ years across 3 continents, not the technology. |
+| 3.5.3 | Update `app/layout.tsx` root metadata — title, description, OG defaults — to use "Lua Learn" and educator-first copy | `PENDING` | AG | |
+| 3.5.4 | Update Navbar logo/text from "Lua" to "Lua Learn" | `PENDING` | AG | |
+
+### Brand Voice Guidelines for AG:
+- **DO:** "Created by an educator with 15+ years across 3 continents", "Designed by teachers, for teachers", "Expert-crafted curriculum"
+- **DON'T:** "AI-powered", "AI generates", "Artificial intelligence", "Machine learning"
+- **Brand name:** Always "Lua Learn" (two words), never just "Lua"
+- **Luana's credentials:** 15+ years early childhood education, taught in Brazil/Australia/Canada, pedagogy degrees from Brazil (including special needs post-grad), diplomas from Australia
 
 ---
 
