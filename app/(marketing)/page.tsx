@@ -35,11 +35,11 @@ export default function LandingPage() {
           </motion.div>
           
           <motion.h1 variants={fadeUp} className="text-5xl md:text-7xl font-lexend font-extrabold text-terracotta-900 leading-tight mb-8">
-            AI-Powered Pre-K Curriculum. <span className="text-terracotta">Every Domain, Every Day.</span>
+            Pre-K Curriculum <span className="text-terracotta">That Covers Every Domain, Every Day.</span>
           </motion.h1>
-          
+
           <motion.p variants={fadeUp} className="text-lg md:text-xl font-inter text-sage-700 leading-relaxed mb-10 max-w-2xl mx-auto">
-            Plan a full month of play-based, bilingual activities in minutes — not hours. Built specifically for educators who care.
+            Created by an educator with 15+ years of experience across 3 continents. Plan a full month of play-based, bilingual activities in minutes — not hours.
           </motion.p>
           
           <motion.div variants={fadeUp} className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -65,7 +65,7 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center max-w-2xl mx-auto mb-16">
             <h2 className="text-3xl md:text-4xl font-lexend font-bold text-terracottaDark mb-4">How it works</h2>
-            <p className="text-sage-600 font-inter">Say goodbye to the Pinterest-to-Google-Docs pipeline. Lua transforms your theme ideas into structured, actionable lesson plans.</p>
+            <p className="text-sage-600 font-inter">Say goodbye to the Pinterest-to-Google-Docs pipeline. Lua Learn transforms your theme ideas into structured, actionable lesson plans.</p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
@@ -76,8 +76,8 @@ export default function LandingPage() {
             </div>
             <div className="bg-cream-50 p-8 rounded-3xl border border-cream-200 flex flex-col items-center text-center shadow-sm relative md:-top-4">
               <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center text-xl font-bold font-lexend text-terracotta mb-6 shadow-sm border border-cream-100">2</div>
-              <h3 className="text-xl font-semibold font-lexend text-terracotta-900 mb-3">AI Generates Curriculum</h3>
-              <p className="text-sm text-sage-600 font-inter leading-relaxed">Lua creates a full month of daily activities across 6 developmental domains — mapped directly into Portuguese and English.</p>
+              <h3 className="text-xl font-semibold font-lexend text-terracotta-900 mb-3">Your Curriculum Is Generated</h3>
+              <p className="text-sm text-sage-600 font-inter leading-relaxed">Lua Learn creates a full month of daily activities across 6 developmental domains — mapped directly into Portuguese and English.</p>
             </div>
             <div className="bg-cream-50 p-8 rounded-3xl border border-cream-200 flex flex-col items-center text-center shadow-sm">
               <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center text-xl font-bold font-lexend text-terracotta mb-6 shadow-sm border border-cream-100">3</div>

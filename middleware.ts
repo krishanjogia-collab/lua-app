@@ -44,6 +44,22 @@ export async function middleware(request: NextRequest) {
   // IMPORTANT: Do not add any logic between createServerClient and getUser()
   const { data: { user } } = await supabase.auth.getUser()
 
+  // Helper: create a redirect that preserves any cookies Supabase set during getUser()
+  function redirectWithCookies(destination: string) {
+    const url = request.nextUrl.clone()
+    url.pathname = destination
+    const redirectResponse = NextResponse.redirect(url)
+    // Copy all cookies from supabaseResponse to the redirect response
+    supabaseResponse.cookies.getAll().forEach((cookie) => {
+      redirectResponse.cookies.set(cookie.name, cookie.value, {
+        path: '/',
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+      })
+    })
+    return redirectResponse
+  }
+
   // Public routes — no auth required (Landing page '/' is handled separately below)
   const publicRoutes = ['/login', '/auth/processing', '/api/auth', '/preview', '/api/og', '/api/share-card']
   if (publicRoutes.some(r => pathname.startsWith(r))) {
@@ -53,12 +69,8 @@ export async function middleware(request: NextRequest) {
   // Handle Landing Page explicitly
   if (pathname === '/') {
     if (user) {
-      // Authenticated users go to their calendar
-      const calendarUrl = request.nextUrl.clone()
-      calendarUrl.pathname = '/calendar'
-      return NextResponse.redirect(calendarUrl)
+      return redirectWithCookies('/calendar')
     } else {
-      // Unauthenticated users stay and see the landing page
       return supabaseResponse
     }
   }
@@ -68,7 +80,15 @@ export async function middleware(request: NextRequest) {
     const loginUrl = request.nextUrl.clone()
     loginUrl.pathname = '/login'
     loginUrl.searchParams.set('next', pathname)
-    return NextResponse.redirect(loginUrl)
+    const redirectResponse = NextResponse.redirect(loginUrl)
+    supabaseResponse.cookies.getAll().forEach((cookie) => {
+      redirectResponse.cookies.set(cookie.name, cookie.value, {
+        path: '/',
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+      })
+    })
+    return redirectResponse
   }
 
   // Studio routes → admin only
@@ -80,9 +100,7 @@ export async function middleware(request: NextRequest) {
       .single()
 
     if (!profile?.is_admin) {
-      const calendarUrl = request.nextUrl.clone()
-      calendarUrl.pathname = '/calendar'
-      return NextResponse.redirect(calendarUrl)
+      return redirectWithCookies('/calendar')
     }
   }
 

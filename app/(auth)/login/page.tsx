@@ -64,10 +64,10 @@ export default function LoginPage() {
             <Sprout className="w-8 h-8 text-white" strokeWidth={1.5} />
           </div>
           <h1 className="font-lexend text-3xl font-semibold text-terracotta-900 tracking-tight">
-            Lua
+            Lua Learn
           </h1>
           <p className="text-sm text-sage-600 mt-1 font-inter">
-            Pre-K Curriculum Engine
+            Pre-K Curriculum by Educators, for Educators
           </p>
         </div>
 
@@ -76,7 +76,7 @@ export default function LoginPage() {
           {step === 'email' ? (
             <>
               <h2 className="font-lexend text-xl font-medium text-terracotta-900 mb-1">
-                Welcome to Lua
+                Welcome to Lua Learn
               </h2>
               <p className="text-sm text-sage-600 font-inter mb-4">
                 Enter your email to sign in or create a new account.
@@ -84,7 +84,7 @@ export default function LoginPage() {
               <div className="bg-terracotta-50 border border-terracotta-100 rounded-xl p-3 mb-6">
                 <p className="text-xs text-terracotta-800 font-inter flex items-center justify-center gap-1.5 font-medium">
                   <Sprout className="w-3 h-3" />
-                  AI-powered Pre-K curriculum planning.
+                  Pre-K curriculum designed by educators with 15+ years of experience.
                 </p>
               </div>
 
