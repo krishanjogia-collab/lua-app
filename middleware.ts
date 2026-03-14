@@ -91,16 +91,27 @@ export async function middleware(request: NextRequest) {
     return redirectResponse
   }
 
-  // Studio routes → admin only
-  if (pathname.startsWith('/studio')) {
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('is_admin')
-      .eq('id', user.id)
-      .single()
+  // Check profile for onboarding + admin status
+  // Wrapped in try/catch because has_onboarded column may not exist yet
+  if (user) {
+    try {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('has_onboarded, is_admin')
+        .eq('id', user.id)
+        .single()
 
-    if (!profile?.is_admin) {
-      return redirectWithCookies('/calendar')
+      // Redirect to onboarding if not yet completed (skip if column missing / profile null)
+      if (profile?.has_onboarded === false && !pathname.startsWith('/onboarding')) {
+        return redirectWithCookies('/onboarding')
+      }
+
+      // Studio routes → admin only
+      if (pathname.startsWith('/studio') && !profile?.is_admin) {
+        return redirectWithCookies('/calendar')
+      }
+    } catch {
+      // Profile query failed (missing column, no profile row, etc.) — let them through
     }
   }
 
