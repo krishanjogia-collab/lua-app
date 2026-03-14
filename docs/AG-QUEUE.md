@@ -105,6 +105,25 @@ Keep:        White #FFFFFF (card backgrounds)
 
 ---
 
+## Phase 3.7: Guided Onboarding Flow (Sprout Tier)
+> Replace the welcome modal with a guided onboarding flow that produces real curriculum on a teacher's first visit. No empty calendars.
+
+| # | Task | Status | Owner | Notes |
+|---|------|--------|-------|-------|
+| 3.7.1 | Create `/onboarding` route + middleware redirect for unonboarded users | `PENDING` | AG | See handoff: `PHASE-3.7-GUIDED-ONBOARDING.md` |
+| 3.7.2 | Build 6-step guided flow (welcome → age group → planning cadence → theme → philosophy → generate + preview) | `PENDING` | AG | All copy must use warm educator-friendly tone. See handoff for language table. |
+| 3.7.3 | Add `planning_cadence` and `age_group` columns to profiles table | `PENDING` | AG | Migration in handoff. Support weekly + monthly cadence. |
+| 3.7.4 | Connect flow to curriculum generation pipeline (weekly or monthly based on cadence) | `PENDING` | AG | Reuse existing `/api/generate-curriculum` with new params |
+| 3.7.5 | Retire WelcomeModal.tsx — onboarding flow replaces it | `PENDING` | AG | |
+
+### Tone Benchmark (Sprout/Bloom metaphor):
+- **Sprout** = free tier, self-serve, "I'll build my own curriculum"
+- **Bloom** = premium tier, Luana's expert-crafted plans, "ready to teach"
+- All language should feel like a supportive colleague, never like software
+- See `docs/handoffs/PHASE-3.7-GUIDED-ONBOARDING.md` for the full language table
+
+---
+
 ## Phase 4: Weekly View & Flexibility
 > Some teachers plan week-by-week. Add weekly view and generation options.
 
