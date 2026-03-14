@@ -2,10 +2,12 @@
 
 import { motion } from 'framer-motion'
 import Link from 'next/link'
-import { CalendarDays, BookOpen, Pencil, Share2, Sparkles, Wind, Heart, Globe, MessageCircle } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { CalendarDays, BookOpen, Pencil, Share2, Sparkles, Wind, Heart, Globe, MessageCircle, Sprout } from 'lucide-react'
 import type { CurriculumPlan, DailyEntry } from '@/lib/types'
 import { useLanguage } from '@/app/(subscriber)/LanguageContext'
 import { cn } from '@/lib/utils'
+import { createClient } from '@/lib/supabase/client'
 
 interface DashboardClientProps {
   profile: { is_admin: boolean; active_subscription_month: string | null }
@@ -38,6 +40,58 @@ const itemVariants = {
 
 export default function DashboardClient({ profile, plan, todayEntry, weekEntries }: DashboardClientProps) {
   const { lang } = useLanguage()
+  const router = useRouter()
+  const supabase = createClient()
+
+  async function handleSignOut() {
+    await supabase.auth.signOut()
+    router.push('/login')
+  }
+
+  if (!profile.is_admin && !profile.active_subscription_month) {
+    return (
+      <motion.div
+        className="max-w-md mx-auto px-4 py-16 text-center"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: 'easeOut' }}
+      >
+        {/* Sprout icon */}
+        <div className="inline-flex items-center justify-center w-16 h-16 rounded-3xl bg-terracotta shadow-soft mb-6">
+          <Sprout className="w-8 h-8 text-white" strokeWidth={1.5} />
+        </div>
+
+        <h1 className="font-lexend text-2xl font-semibold text-terracotta-900 mb-3">
+          {lang === 'en' ? "You're on the list!" : 'Você está na lista!'}
+        </h1>
+
+        <p className="text-sage-600 font-inter text-sm leading-relaxed mb-8">
+          {lang === 'en'
+            ? "Lua Learn is launching soon with classroom-ready Pre-K curriculum designed by educators with 15+ years of experience across 3 continents. We'll let you know when your dashboard is ready."
+            : 'O Lua Learn está chegando com currículo de Educação Infantil pronto para a sala de aula, criado por educadores com mais de 15 anos de experiência em 3 continentes. Avisaremos quando seu painel estiver pronto.'}
+        </p>
+
+        {/* Instagram CTA */}
+        <a
+          href="https://instagram.com/lua_learn"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-2 px-6 py-3 bg-terracotta-500 hover:bg-terracotta-600 text-white rounded-2xl font-lexend font-medium transition shadow-sm mb-4"
+        >
+          {lang === 'en' ? 'Follow @lua_learn' : 'Siga @lua_learn'}
+        </a>
+
+        <div>
+          <button
+            onClick={handleSignOut}
+            className="text-sm text-sage-400 hover:text-terracotta-500 font-inter underline transition"
+          >
+            {lang === 'en' ? 'Sign out' : 'Sair'}
+          </button>
+        </div>
+      </motion.div>
+    )
+  }
 
   // Time-of-day greeting
   const hour = new Date().getHours()

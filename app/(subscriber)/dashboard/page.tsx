@@ -57,7 +57,8 @@ export default async function DashboardPage() {
 
   if (!profile) redirect('/login')
 
-  if (!profile.has_onboarded) redirect('/onboarding')
+  const isEarlyAccess = !profile.is_admin && !profile.active_subscription_month
+  if (!profile.has_onboarded && !isEarlyAccess) redirect('/onboarding')
 
   // Fetch plan (same logic as calendar page)
   let plan = null

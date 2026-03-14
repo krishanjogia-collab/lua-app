@@ -136,6 +136,16 @@ Keep:        White #FFFFFF (card backgrounds)
 
 ---
 
+## Phase 3.9.1: Early Access Dashboard State
+> When non-admin users sign up from Instagram, show a warm early access confirmation instead of an empty dashboard. Supabase auth.users is the waitlist.
+
+| # | Task | Status | Owner | Notes |
+|---|------|--------|-------|-------|
+| 3.9.1.1 | Add early access branch to `DashboardClient.tsx` — detect `!is_admin && !active_subscription_month`, render waitlist confirmation with Instagram CTA + sign-out | `DONE` | AG | See handoff: `PHASE-3.9.1-EARLY-ACCESS.md` |
+| 3.9.1.2 | Fix `dashboard/page.tsx` — early access users hit `has_onboarded` redirect before early access screen renders. Skip onboarding redirect when `!is_admin && !active_subscription_month` | `PENDING` | AG | Bug found in live testing. See updated handoff. |
+
+---
+
 ## Phase 4.1: Execution-Ready Activity Cards (HIGH PRIORITY)
 > The core product differentiator. Current activity cards are inspiration-level; teachers need execution-ready content with steps, materials quantities, differentiation, safety notes, and more. Also makes bilingual content opt-in rather than forced.
 
