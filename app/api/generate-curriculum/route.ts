@@ -25,14 +25,29 @@ export async function POST(request: Request) {
 
   try {
     const body = await request.json()
-    const { theme, monthYear, philosophy } = body as {
+    const { theme, monthYear, philosophy, confirmOverwrite } = body as {
       theme:      string
       monthYear:  string
       philosophy: Philosophy
+      confirmOverwrite?: boolean
     }
 
     if (!theme || !monthYear || !philosophy) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
+    }
+
+    // Guard: Prevent accidental overwrite of a published plan
+    const { data: existingPlan } = await supabase
+      .from('curriculum_plans')
+      .select('is_published')
+      .eq('month_year', monthYear)
+      .maybeSingle()
+
+    if (existingPlan?.is_published && !confirmOverwrite) {
+      return NextResponse.json(
+        { error: 'A published plan exists for this month. Pass confirmOverwrite: true to proceed.' },
+        { status: 409 }
+      )
     }
 
     const weekdays = getWeekdaysInMonth(monthYear)

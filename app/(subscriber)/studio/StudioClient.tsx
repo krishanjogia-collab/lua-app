@@ -43,6 +43,9 @@ export function StudioClient({ plans }: StudioClientProps) {
   const [activePlan, setActivePlan]   = useState<PlanSummary | null>(null)
   const [actionType, setActionType]   = useState<'unpublish' | 'delete' | null>(null)
   const [actionLoading, setActionLoading] = useState(false)
+  
+  // Overwrite safeguard state
+  const [overwriteWarning, setOverwriteWarning] = useState<PlanSummary | null>(null)
 
   async function confirmAction() {
     if (!activePlan || !actionType) return
@@ -82,6 +85,19 @@ export function StudioClient({ plans }: StudioClientProps) {
 
   async function handleGenerate(e: React.FormEvent) {
     e.preventDefault()
+    
+    // Check if target month is already occupied
+    const existing = localPlans.find(p => p.month_year === monthYear)
+    if (existing) {
+      setOverwriteWarning(existing)
+      return
+    }
+
+    await executeGeneration()
+  }
+
+  async function executeGeneration(confirmOverwrite = false) {
+    setOverwriteWarning(null)
     setGenerating(true)
     setError(null)
 
@@ -89,7 +105,7 @@ export function StudioClient({ plans }: StudioClientProps) {
       const res  = await fetch('/api/generate-curriculum', {
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify({ theme, monthYear, philosophy }),
+        body:    JSON.stringify({ theme, monthYear, philosophy, confirmOverwrite }),
       })
       const json = await res.json()
 
@@ -246,7 +262,16 @@ export function StudioClient({ plans }: StudioClientProps) {
                       {Array.from({ length: 12 }, (_, i) => {
                         const m = String(i + 1).padStart(2, '0')
                         const name = new Date(2000, i, 1).toLocaleString('default', { month: 'long' })
-                        return <option key={m} value={m}>{name}</option>
+                        
+                        const targetMonthYear = `${monthYear.split('-')[0]}-${m}`
+                        const existing = localPlans.find(p => p.month_year === targetMonthYear)
+                        
+                        let indicator = ''
+                        if (existing) {
+                          indicator = existing.is_published ? ' ● (Published)' : ' ● (Draft)'
+                        }
+
+                        return <option key={m} value={m}>{name}{indicator}</option>
                       })}
                     </select>
                     <select
@@ -348,6 +373,49 @@ export function StudioClient({ plans }: StudioClientProps) {
                 className={`flex-1 ${actionType === 'delete' ? 'bg-rose-600 hover:bg-rose-700 text-white border-0' : 'bg-amber-500 hover:bg-amber-600 text-white border-0'}`}
               >
                 {actionLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : actionType === 'unpublish' ? 'Unpublish' : 'Delete'}
+              </Button>
+            </div>
+          </motion.div>
+        </div>
+      )}
+
+      {/* Overwrite Safeguard Modal */}
+      {overwriteWarning && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-sage-900/40 backdrop-blur-sm">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-white rounded-[2rem] p-6 max-w-sm w-full shadow-soft-xl"
+          >
+            <div className={`w-12 h-12 rounded-2xl flex items-center justify-center mb-4 ${overwriteWarning.is_published ? 'bg-rose-100' : 'bg-amber-100'}`}>
+              <AlertTriangle className={`w-6 h-6 ${overwriteWarning.is_published ? 'text-rose-600' : 'text-amber-600'}`} strokeWidth={1.5} />
+            </div>
+            
+            <h3 className="font-lexend font-bold text-lg text-terracotta-900 mb-2">
+              Overwrite Plan?
+            </h3>
+            
+            <p className="font-inter text-sage-600 text-sm mb-6 leading-relaxed">
+              {overwriteWarning.is_published 
+                ? `${formatMonthYear(overwriteWarning.month_year)} is currently published and visible to subscribers. Generating will replace it with a new draft. Subscribers will lose access until you re-publish.`
+                : `You already have a draft for ${formatMonthYear(overwriteWarning.month_year)} ('${overwriteWarning.theme_name}'). Generating will replace it with a new plan.`}
+            </p>
+
+            <div className="flex gap-3">
+              <Button
+                variant="ghost"
+                className="flex-1"
+                onClick={() => setOverwriteWarning(null)}
+                disabled={generating}
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={() => executeGeneration(true)}
+                disabled={generating}
+                className={`flex-1 ${overwriteWarning.is_published ? 'bg-rose-600 hover:bg-rose-700 text-white border-0' : 'bg-amber-500 hover:bg-amber-600 text-white border-0'}`}
+              >
+                {generating ? <Loader2 className="w-4 h-4 animate-spin flex-shrink-0" /> : 'Generate Anyway'}
               </Button>
             </div>
           </motion.div>

@@ -234,10 +234,10 @@ Task 4.1.8 is end-to-end validation.
 
 | # | Task | Status | Owner | Notes |
 |---|------|--------|-------|-------|
-| 4.6.1 | Add pre-generation check — query `curriculum_plans` for existing plan when admin selects a month in Studio | `PENDING` | AG | Before calling generate API |
-| 4.6.2 | Show confirmation modal when plan exists for selected month — different severity for draft vs published | `PENDING` | AG | Draft: "You have a draft for June 2026 ('Ocean Explorers'). Generating will replace it." Published: "June 2026 is published and visible to subscribers. Generating will replace it with a new draft." |
-| 4.6.3 | Add visual indicators to month picker — dot/badge showing which months already have plans (green=published, amber=draft) | `PENDING` | AG | Helps Luana see at a glance which months are taken |
-| 4.6.4 | Add `is_published` guard in API — if overwriting a published plan, require explicit `confirmOverwrite: true` param | `PENDING` | AG | Defense in depth — API rejects accidental overwrites of published plans |
+| 4.6.1 | Add pre-generation check — query `curriculum_plans` for existing plan when admin selects a month in Studio | `DONE` | AG | Before calling generate API |
+| 4.6.2 | Show confirmation modal when plan exists for selected month — different severity for draft vs published | `DONE` | AG | Draft: "You have a draft for June 2026 ('Ocean Explorers'). Generating will replace it." Published: "June 2026 is published and visible to subscribers. Generating will replace it with a new draft." |
+| 4.6.3 | Add visual indicators to month picker — dot/badge showing which months already have plans (green=published, amber=draft) | `DONE` | AG | Helps Luana see at a glance which months are taken |
+| 4.6.4 | Add `is_published` guard in API — if overwriting a published plan, require explicit `confirmOverwrite: true` param | `DONE` | AG | Defense in depth — API rejects accidental overwrites of published plans |
 | 4.6.5 | Add unpublish action — button on published plans in Studio sidebar to set `is_published = false` (returns to draft state) | `DONE` | AG | Confirmation modal: "This will remove the plan from subscribers' view." |
 | 4.6.6 | Add delete plan action — button on draft plans in Studio sidebar to permanently delete from `curriculum_plans` | `DONE` | AG | Only drafts can be deleted. Published plans must be unpublished first. Confirmation modal required. |
 
