@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { Sprout, CalendarDays, BookOpen, LogOut, Pencil, Globe, Home } from 'lucide-react'
+import { Sprout, CalendarDays, BookOpen, LogOut, Pencil, Globe, Home, Users } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { useLanguage } from '@/app/(subscriber)/LanguageContext'
 import { cn } from '@/lib/utils'
@@ -56,7 +56,7 @@ export function Navbar({ isAdmin }: NavbarProps) {
               {label}
             </Link>
           ))}
-          {isAdmin && (
+          {isAdmin && (<>
             <Link
               href="/studio"
               className={cn(
@@ -69,7 +69,19 @@ export function Navbar({ isAdmin }: NavbarProps) {
               <Pencil className="w-4 h-4" strokeWidth={1.5} />
               Studio
             </Link>
-          )}
+            <Link
+              href="/admin"
+              className={cn(
+                'flex items-center gap-1.5 px-4 py-2 rounded-2xl text-sm font-medium font-inter transition',
+                pathname.startsWith('/admin')
+                  ? 'bg-sage-100 text-sage-700'
+                  : 'text-sage-600 hover:bg-sage-50'
+              )}
+            >
+              <Users className="w-4 h-4" strokeWidth={1.5} />
+              Admin
+            </Link>
+          </>)}
         </nav>
 
         {/* Right actions */}
@@ -111,7 +123,7 @@ export function Navbar({ isAdmin }: NavbarProps) {
             {label}
           </Link>
         ))}
-        {isAdmin && (
+        {isAdmin && (<>
           <Link
             href="/studio"
             className={cn(
@@ -124,7 +136,19 @@ export function Navbar({ isAdmin }: NavbarProps) {
             <Pencil className="w-4 h-4" strokeWidth={1.5} />
             Studio
           </Link>
-        )}
+          <Link
+            href="/admin"
+            className={cn(
+              'flex-1 flex flex-col items-center gap-0.5 py-2.5 text-xs font-inter transition',
+              pathname.startsWith('/admin')
+                ? 'text-sage-700 bg-sage-50'
+                : 'text-sage-400 hover:bg-sage-50'
+            )}
+          >
+            <Users className="w-4 h-4" strokeWidth={1.5} />
+            Admin
+          </Link>
+        </>)}
       </nav>
     </header>
   )

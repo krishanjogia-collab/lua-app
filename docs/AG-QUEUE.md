@@ -248,15 +248,15 @@ Task 4.1.8 is end-to-end validation.
 
 | # | Task | Status | Owner | Notes |
 |---|------|--------|-------|-------|
-| 8.1 | Create `/admin` route group with admin middleware guard (redirect non-admins) | `PENDING` | AG | |
-| 8.2 | Build waitlist dashboard — show all signups (from `profiles` joined with `auth.users`), signup date, status (waitlist/active/admin), search/filter | `PENDING` | AG | This is Luana's primary view |
-| 8.3 | Add individual "Activate" button — sets `active_subscription_month` on a user's profile, transitions them from waitlist to active subscriber | `PENDING` | AG | |
-| 8.4 | Add activation email trigger — when Luana activates a user, auto-send "Your Lua Learn dashboard is ready!" email via Resend | `PENDING` | AG | Resend already configured for OTP. Template should match brand. |
-| 8.5 | Add bulk activation — "Activate all waitlist users for [month]" for launch day | `PENDING` | AG | |
-| 8.6 | Add simple broadcast composer — write a message, send to all waitlist users via Resend (launch announcements, updates) | `PENDING` | AG | Keeps Luana out of Mailchimp. Simple subject + body, no drag-and-drop needed. |
-| 8.7 | Add waitlist stats widget — total signups, signups this week, simple growth chart | `PENDING` | AG | Motivating for Luana to see Instagram → signup traction |
-| 8.8 | Add role management — view/change user roles (admin, subscriber, waitlist) | `PENDING` | AG | |
-| 8.9 | Add subscription management — assign/revoke `active_subscription_month`, future tier management (Sprout/Bloom) | `PENDING` | AG | |
+| 8.1 | Create `/admin` route group and middleware root | `DONE` | AG | Needs server component `profile.is_admin` guard and navbar injection |
+| 8.2 | Build `AdminDashboardClient.tsx` Waitlist Dashboard | `DONE` | AG | Fetch `auth.users` via `service_role` and merge with `profiles` |
+| 8.3 | Add individual "Activate" button + API route | `DONE` | AG | Mutates profile `active_subscription_month` optimistically |
+| 8.4 | Add activation email trigger via Resend | `DONE` | AG | Resend API key configuration. Hooks up to `/api/admin/activate` |
+| 8.5 | Add Bulk activation action ("Launch Day" button) | `DONE` | AG | Multi-batch mutation inside `/api/admin/bulk-activate` via Resend iterator |
+| 8.6 | Add Broadcast composer + API route | `DONE` | AG | `/api/admin/broadcast` to hit Resend batch processing endpoint iteratively |
+| 8.7 | Add Waitlist Stats widget | `DONE` | AG | Dynamic metric extraction of waitlist focus and admin accounts |
+| 8.8 | Add Role Management | `DONE` | AG | Toggle `is_admin` natively over profiles inside of `AdminDashboardClient` via `/api/admin/roles` |
+| 8.9 | Add Subscription Override Management | `DONE` | AG | Input to override `active_subscription_month` manually |
 
 ### Design Notes for AG:
 - Admin console should feel like part of the app, not a separate tool — same brand, same nav
