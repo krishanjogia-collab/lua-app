@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import {
-  Sparkles, CalendarRange, CheckCircle2, Clock, Plus, Sprout
+  Sparkles, CalendarRange, CheckCircle2, Clock, Plus, Sprout, EyeOff, Trash2, AlertTriangle, Loader2
 } from 'lucide-react'
 import { PhilosophyToggle } from '@/components/studio/PhilosophyToggle'
 import { Button } from '@/components/ui/Button'
@@ -35,7 +35,50 @@ export function StudioClient({ plans }: StudioClientProps) {
   const [philosophy,  setPhilosophy]  = useState<Philosophy>('custom')
   const [generating,  setGenerating]  = useState(false)
   const [error,       setError]       = useState<string | null>(null)
+  
+  // Optimistic UI state
+  const [localPlans,  setLocalPlans]  = useState(plans)
   const [showForm,    setShowForm]    = useState(plans.length === 0)
+
+  const [activePlan, setActivePlan]   = useState<PlanSummary | null>(null)
+  const [actionType, setActionType]   = useState<'unpublish' | 'delete' | null>(null)
+  const [actionLoading, setActionLoading] = useState(false)
+
+  async function confirmAction() {
+    if (!activePlan || !actionType) return
+    setActionLoading(true)
+
+    try {
+      const endpoint = actionType === 'unpublish' ? '/api/unpublish' : '/api/delete-plan'
+      const res = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ planId: activePlan.id }),
+      })
+      const json = await res.json()
+      if (!res.ok) throw new Error(json.error || `Failed to ${actionType}`)
+
+      // Refresh page to reflect state changes on server
+      router.refresh()
+      
+      // Optimistic UI update
+      if (actionType === 'delete') {
+        setLocalPlans(prev => prev.filter(p => p.id !== activePlan.id))
+        if (localPlans.length <= 1) setShowForm(true)
+      } else if (actionType === 'unpublish') {
+        setLocalPlans(prev => prev.map(p => 
+          p.id === activePlan.id ? { ...p, is_published: false } : p
+        ))
+      }
+
+    } catch (err) {
+      alert(String(err))
+    } finally {
+      setActionLoading(false)
+      setActivePlan(null)
+      setActionType(null)
+    }
+  }
 
   async function handleGenerate(e: React.FormEvent) {
     e.preventDefault()
@@ -91,10 +134,10 @@ export function StudioClient({ plans }: StudioClientProps) {
           <h2 className="font-lexend font-semibold text-terracotta-800 text-sm mb-3 px-1">
             Curriculum Plans
           </h2>
-          {plans.length === 0 && (
+          {localPlans.length === 0 && (
             <p className="text-sm text-sage-400 font-inter px-1">No plans yet. Generate your first one!</p>
           )}
-          {plans.map(plan => (
+          {localPlans.map(plan => (
             <button
               key={plan.id}
               onClick={() => router.push(`/studio/${plan.id}/review`)}
@@ -115,20 +158,50 @@ export function StudioClient({ plans }: StudioClientProps) {
                   <Clock className="w-4 h-4 text-terracotta-400 flex-shrink-0 mt-0.5" strokeWidth={1.5} />
                 )}
               </div>
-              <span className={`inline-flex items-center mt-2 px-2.5 py-0.5 rounded-xl text-xs font-medium font-inter ${
-                plan.is_published
-                  ? 'bg-sage-100 text-sage-700'
-                  : 'bg-terracotta-100 text-terracotta-600'
-              }`}>
-                {plan.is_published ? 'Published' : 'Draft'}
-              </span>
+              <div className="flex items-center justify-between mt-3">
+                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-xl text-xs font-medium font-inter ${
+                  plan.is_published
+                    ? 'bg-sage-100 text-sage-700'
+                    : 'bg-terracotta-100 text-terracotta-600'
+                }`}>
+                  {plan.is_published ? 'Published' : 'Draft'}
+                </span>
+
+                <div className="flex items-center gap-1">
+                  {plan.is_published ? (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        setActivePlan(plan)
+                        setActionType('unpublish')
+                      }}
+                      title="Unpublish"
+                      className="p-1.5 text-sage-400 hover:text-amber-600 hover:bg-amber-50 rounded-lg transition"
+                    >
+                      <EyeOff className="w-4 h-4" />
+                    </button>
+                  ) : (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        setActivePlan(plan)
+                        setActionType('delete')
+                      }}
+                      title="Delete Draft"
+                      className="p-1.5 text-terracotta-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  )}
+                </div>
+              </div>
             </button>
           ))}
         </aside>
 
         {/* Main — Generator form */}
         <main className="md:col-span-2">
-          {showForm || plans.length === 0 ? (
+          {showForm || localPlans.length === 0 ? (
             <motion.div
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
@@ -234,6 +307,52 @@ export function StudioClient({ plans }: StudioClientProps) {
           )}
         </main>
       </div>
+
+      {/* Confirmation Modal */}
+      {activePlan && actionType && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-sage-900/40 backdrop-blur-sm">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-white rounded-[2rem] p-6 max-w-sm w-full shadow-soft-xl"
+          >
+            <div className={`w-12 h-12 rounded-2xl flex items-center justify-center mb-4 ${actionType === 'delete' ? 'bg-rose-100' : 'bg-amber-100'}`}>
+              <AlertTriangle className={`w-6 h-6 ${actionType === 'delete' ? 'text-rose-600' : 'text-amber-600'}`} strokeWidth={1.5} />
+            </div>
+            
+            <h3 className="font-lexend font-bold text-lg text-terracotta-900 mb-2">
+              {actionType === 'unpublish' ? 'Unpublish Plan?' : 'Delete Draft?'}
+            </h3>
+            
+            <p className="font-inter text-sage-600 text-sm mb-6 leading-relaxed">
+              {actionType === 'unpublish' 
+                ? "This will remove the plan from subscribers' view and move it back to your drafts."
+                : "This draft plan will be permanently deleted from the database. This action cannot be undone."}
+            </p>
+
+            <div className="flex gap-3">
+              <Button
+                variant="ghost"
+                className="flex-1"
+                onClick={() => {
+                  setActivePlan(null)
+                  setActionType(null)
+                }}
+                disabled={actionLoading}
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={confirmAction}
+                disabled={actionLoading}
+                className={`flex-1 ${actionType === 'delete' ? 'bg-rose-600 hover:bg-rose-700 text-white border-0' : 'bg-amber-500 hover:bg-amber-600 text-white border-0'}`}
+              >
+                {actionLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : actionType === 'unpublish' ? 'Unpublish' : 'Delete'}
+              </Button>
+            </div>
+          </motion.div>
+        </div>
+      )}
     </div>
   )
 }

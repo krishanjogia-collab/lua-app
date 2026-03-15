@@ -238,8 +238,8 @@ Task 4.1.8 is end-to-end validation.
 | 4.6.2 | Show confirmation modal when plan exists for selected month — different severity for draft vs published | `PENDING` | AG | Draft: "You have a draft for June 2026 ('Ocean Explorers'). Generating will replace it." Published: "June 2026 is published and visible to subscribers. Generating will replace it with a new draft." |
 | 4.6.3 | Add visual indicators to month picker — dot/badge showing which months already have plans (green=published, amber=draft) | `PENDING` | AG | Helps Luana see at a glance which months are taken |
 | 4.6.4 | Add `is_published` guard in API — if overwriting a published plan, require explicit `confirmOverwrite: true` param | `PENDING` | AG | Defense in depth — API rejects accidental overwrites of published plans |
-| 4.6.5 | Add unpublish action — button on published plans in Studio sidebar to set `is_published = false` (returns to draft state) | `PENDING` | AG | Confirmation modal: "This will remove the plan from subscribers' view." |
-| 4.6.6 | Add delete plan action — button on draft plans in Studio sidebar to permanently delete from `curriculum_plans` | `PENDING` | AG | Only drafts can be deleted. Published plans must be unpublished first. Confirmation modal required. |
+| 4.6.5 | Add unpublish action — button on published plans in Studio sidebar to set `is_published = false` (returns to draft state) | `DONE` | AG | Confirmation modal: "This will remove the plan from subscribers' view." |
+| 4.6.6 | Add delete plan action — button on draft plans in Studio sidebar to permanently delete from `curriculum_plans` | `DONE` | AG | Only drafts can be deleted. Published plans must be unpublished first. Confirmation modal required. |
 
 ---
 
@@ -265,6 +265,130 @@ Task 4.1.8 is end-to-end validation.
 - Broadcast emails use Resend (already in stack). Brand-consistent HTML template with Lua Learn header, terracotta CTA button
 - Stats should be glanceable — big number + sparkline, not a full analytics suite
 - Mobile-friendly — Luana will check this from her phone
+
+---
+
+## Phase 9: Subscription Tiers & Payments
+> Introduce the Sprout/Bloom tier system and Stripe payment integration. This phase requires clear separation between self-serve content (Sprout) and Luana's curated content (Bloom).
+
+### Tier Architecture
+
+**Current state (broken):** There's no tier concept. `active_subscription_month` is a single field that unlocks "a plan." The onboarding flow generates a plan for the user (Sprout behavior), but the Studio publish flow pushes a plan to ALL subscribers (Bloom behavior). These are conflated — a Sprout user who generates their own plan and a Bloom subscriber who receives Luana's plan both just "have a plan for March 2026." No distinction.
+
+**Target state:**
+
+| Aspect | Sprout (Free) | Bloom (Premium) |
+|--------|--------------|-----------------|
+| **Price** | Free | $9.99/month (or annual) |
+| **Content source** | Self-generated via onboarding/Studio-lite | Luana's expert-curated via Studio |
+| **Plan ownership** | User owns their plans (stored per-user) | Luana's published plans (shared across Bloom subscribers) |
+| **Experience** | "I'll build my own curriculum" | "Open app, today's plan is ready" |
+| **Generation** | User picks theme, philosophy, age group → Gemini generates | Luana generates, reviews, edits, publishes |
+| **Editing** | Can regenerate, can't edit individual activities (yet) | Read-only for subscribers; Luana edits in Studio |
+| **Limits** | 1 active plan at a time? Monthly generation cap? | Full month published, new month every month |
+| **Upsell path** | "Want expert-crafted plans? Upgrade to Bloom" | N/A — this is the top tier |
+
+### Data Model Changes
+
+**Profile table:**
+```sql
+ALTER TABLE profiles
+  ADD COLUMN subscription_tier TEXT DEFAULT 'sprout'
+    CHECK (subscription_tier IN ('sprout', 'bloom')),
+  ADD COLUMN stripe_customer_id TEXT,
+  ADD COLUMN stripe_subscription_id TEXT,
+  ADD COLUMN subscription_status TEXT DEFAULT 'inactive'
+    CHECK (subscription_status IN ('inactive', 'active', 'past_due', 'canceled'));
+```
+
+**Plan ownership:** Currently `curriculum_plans` has no `user_id` — plans are global. For Sprout, plans need to be per-user:
+```sql
+ALTER TABLE curriculum_plans
+  ADD COLUMN user_id UUID REFERENCES auth.users(id),
+  ADD COLUMN plan_type TEXT DEFAULT 'curated'
+    CHECK (plan_type IN ('curated', 'self_generated'));
+```
+- `curated` + `user_id = NULL` = Luana's published Bloom plans (current behavior)
+- `self_generated` + `user_id = {user}` = Sprout user's own plans
+
+**RLS policy updates:**
+- Sprout users can only read their own `self_generated` plans
+- Bloom users can read `curated` + `is_published = true` plans for their subscription month
+- Admins can read/write everything
+
+### User Journey Changes
+
+**Sprout user journey (free):**
+```
+Landing page → "Get Started Free" → signup → onboarding flow
+  → picks theme, philosophy, age group → generates plan
+  → lands on dashboard with THEIR OWN plan
+  → can view calendar, day view, print PDFs
+  → sees gentle "Upgrade to Bloom" upsell on dashboard
+  → can regenerate next month for free
+```
+
+**Bloom user journey (paid):**
+```
+Landing page → "Subscribe to Bloom" → signup → Stripe Checkout
+  → payment succeeds → webhook sets subscription_tier='bloom', subscription_status='active'
+  → redirected to dashboard
+  → if Luana has published a plan for this month → shows it
+  → if not yet published → "Your expert-crafted curriculum is being prepared"
+  → each month: Luana publishes → Bloom users see it automatically
+```
+
+**Upgrade path (Sprout → Bloom):**
+```
+Dashboard (Sprout user) → "Upgrade to Bloom" banner/card
+  → Stripe Checkout → payment
+  → webhook upgrades tier → user now sees Luana's plans instead of self-generated
+  → self-generated plans still accessible? (Decision needed)
+```
+
+### Tasks
+
+| # | Task | Status | Owner | Notes |
+|---|------|--------|-------|-------|
+| 9.1 | Add `subscription_tier`, `stripe_customer_id`, `stripe_subscription_id`, `subscription_status` columns to profiles | `PENDING` | AG | Migration SQL. Default tier = 'sprout'. |
+| 9.2 | Add `user_id` and `plan_type` columns to `curriculum_plans` + update RLS policies | `PENDING` | AG | Sprout plans are per-user. Bloom plans are global curated. Backward compat: existing plans get `plan_type='curated'`, `user_id=NULL`. |
+| 9.3 | Update `lib/types.ts` — add tier fields to Profile, plan_type to CurriculumPlan | `PENDING` | AG | |
+| 9.4 | Update onboarding generation — set `user_id` and `plan_type='self_generated'` on plans created by Sprout users | `PENDING` | AG | Currently the API uses upsert on `month_year` — needs to also key on `user_id` for Sprout plans |
+| 9.5 | Update dashboard/calendar queries — Sprout users see their own plans, Bloom users see Luana's published plans | `PENDING` | AG | The dashboard `page.tsx` and calendar `page.tsx` need tier-aware queries |
+| 9.6 | Create Stripe account + products — one product "Lua Learn Bloom", one price (monthly recurring) | `PENDING` | Krish | Manual setup in Stripe Dashboard. Get API keys. |
+| 9.7 | Add Stripe env vars to Vercel — `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | `PENDING` | Krish | |
+| 9.8 | Create `/api/checkout` route — creates Stripe Checkout Session, redirects to Stripe | `PENDING` | AG | Pass user email as customer_email for matching. Success URL: `/dashboard?upgraded=true`. Cancel URL: `/`. |
+| 9.9 | Create `/api/webhooks/stripe` route — handle `checkout.session.completed`, `invoice.paid`, `customer.subscription.deleted` | `PENDING` | AG | Map Stripe customer email → Supabase profile. Set `subscription_tier='bloom'`, `subscription_status='active'`, `active_subscription_month` to current month. |
+| 9.10 | Add "Upgrade to Bloom" card to Sprout dashboard — describes what Bloom includes, CTA to `/api/checkout` | `PENDING` | AG | Warm, not pushy. "Ready for expert-crafted plans?" |
+| 9.11 | Add pricing section to landing page — show Sprout (free) vs Bloom (paid) side by side | `PENDING` | AG | |
+| 9.12 | Handle subscription renewal — `invoice.paid` webhook updates `active_subscription_month` to next month | `PENDING` | AG | Bloom subscribers auto-renew monthly. |
+| 9.13 | Handle cancellation — `customer.subscription.deleted` webhook sets `subscription_status='canceled'`, shows "Your subscription ended" state | `PENDING` | AG | User keeps access until end of billing period. |
+| 9.14 | Add Stripe Customer Portal link — "Manage Subscription" button in settings or dashboard for Bloom users | `PENDING` | AG | Stripe's hosted portal handles plan changes, payment method updates, cancellation. |
+
+### Key Decisions (for Krish/Claude to resolve before implementation):
+
+1. **Price point:** $9.99/month? $7.99/month with annual discount? Need to decide before creating Stripe products.
+2. **Sprout generation limits:** Unlimited? 1 plan per month? 3 per month? Unlimited is simplest for MVP.
+3. **What happens to Sprout plans when user upgrades to Bloom?** Keep them accessible in a "My Plans" section? Or replace entirely with Luana's plans?
+4. **Trial period:** Should Bloom have a 7-day free trial? Stripe supports this natively.
+5. **Multiple admins/creators:** For now it's just Luana. But should the system support multiple creators eventually? (Not for MVP — just noting.)
+6. **Currency:** USD only? CAD? BRL? Stripe handles multi-currency but pricing display needs to match.
+
+### Implementation Order:
+1. **9.1–9.3 first** — Schema changes. Non-breaking if defaults are correct.
+2. **9.4–9.5 second** — Query changes. Sprout users see their own plans.
+3. **9.6–9.7 third** — Stripe setup (Krish does this manually).
+4. **9.8–9.9 fourth** — Payment routes. This is where money flows.
+5. **9.10–9.11 fifth** — UI for upgrade and pricing.
+6. **9.12–9.14 last** — Lifecycle management (renewal, cancellation, portal).
+
+### What NOT to build for MVP:
+- No annual billing (add later)
+- No coupon/promo codes (add later)
+- No team/school plans (add later)
+- No invoicing (Stripe handles this)
+- No refund flow (handle manually via Stripe dashboard)
+- No usage analytics for Stripe (Stripe dashboard is sufficient)
 
 ---
 
